@@ -17,6 +17,9 @@ get_info <- function(){
   citations <- as.data.frame(mapply(get_citations, code_lines)) %>%
     stack()
   names(citations) <- c('citations', 'sourcefile')
+  authors <- as.data.frame(mapply(get_authors, code_lines)) %>%
+    stack()
+  names(authors) <- c('authors', 'sourcefile')
   descriptions <- as.data.frame(mapply(get_descriptions, code_lines)) %>%
     stack()
   names(descriptions) <- c('descriptions', 'sourcefile')
@@ -29,8 +32,8 @@ get_info <- function(){
   names(links) <- c('links', 'sourcefile')
   dois <- links2dois(code_lines)
   names(dois) <- c('dois', 'sourcefile')
-  df <- data.frame(titles[,2], titles[,1], citations[,1], descriptions[,1], year[,1], links[,1], dois[,1])
-  colnames(df) <- c('sourcefile', 'title', 'citation', 'description', 'year', 'links', 'doi')
+  df <- data.frame(titles[,2], titles[,1], citations[,1], authors[,1], descriptions[,1], year[,1], links[,1], dois[,1])
+  colnames(df) <- c('sourcefile', 'TI', 'citation', 'AU', 'AB', 'PY', 'UR', 'DO')
   return(df)
 }
 
@@ -123,6 +126,28 @@ get_citations <- function(html){
   citations <- gsub('\n', '', citations) #remove line break codes
   citations <- mgsub::mgsub(citations, c('\302', '\240', '\342', '\200', '\246', '\303', '\241', '\305', '\201', '\242', '\223'), c('', '', '', '', '', '', '', '', '', '', ''))
   return(citations)
+}
+
+
+#' Extract authors from Google Scholar results
+#'
+#' @description Extract author details from the record's citation from Google
+#' Scholar search results.
+#' @param html A vector of lines consisting of the html code for a web page
+#' @return A vector of author lists
+#' @examples
+#' authors <- get_authors(lines)
+#' authors;
+#' @export
+get_authors <- function(html){
+  authors <- get_citations(html)
+  authors <- sub("\\-.*", "", authors)
+  authors <- strsplit(authors, ", ")
+  authors <- as.data.frame(mapply(paste, authors, collapse = '; '))
+  authors <- mapply(textclean::replace_non_ascii, authors)
+  authors <- as.data.frame(mapply(gsub, '\\.\\.\\.', '; et al.', authors))
+  names(authors) <- 'authors'
+  return(authors)
 }
 
 

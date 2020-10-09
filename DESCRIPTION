@@ -19,6 +19,7 @@ License: GPL-3
 Imports: 
     mgsub,
     stringr,
+    textclean,
     tm,
     xml2
 Suggests: 

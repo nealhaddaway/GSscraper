@@ -23,5 +23,5 @@ Download multiple results pages as html files
 \examples{
 urls <- c('https://scholar.google.co.uk/scholar?start=50&q=insect+population+\%22systematic+review\%22&hl=en&as_vis=0,5&as_sdt=0,5',
    'https://scholar.google.co.uk/scholar?start=90&q=insect+population+\%22systematic+review\%22&hl=en&as_vis=0,5&as_sdt=0,5')
-save_html(urls, sleep = '5');
+save_htmls(urls, sleep = '5');
 }
