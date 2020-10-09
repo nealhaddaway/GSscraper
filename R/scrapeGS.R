@@ -4,6 +4,7 @@
 #' each page of Google Scholar search results.
 #' @return A dataframe containing all extractable information from all html files in the working
 #' directory.
+#' @importFrom magrittr "%>%"
 #' @examples
 #' info <- get_info();
 #'@export
@@ -15,17 +16,21 @@ get_info <- function(){
   names(titles) <- c('title', 'sourcefile')
   citations <- as.data.frame(mapply(get_citations, code_lines)) %>%
     stack()
+  names(citations) <- c('citations', 'sourcefile')
   descriptions <- as.data.frame(mapply(get_descriptions, code_lines)) %>%
     stack()
+  names(descriptions) <- c('descriptions', 'sourcefile')
   year <- as.data.frame(mapply(get_years, code_lines))
   year[year == 'character(0)'] <- NA
   year <- stack(year)
   names(year) <- c('year', 'sourcefile')
   links <- as.data.frame(mapply(get_links, code_lines)) %>%
     stack()
+  names(links) <- c('links', 'sourcefile')
   dois <- links2dois(code_lines)
-  df <- data.frame(titles[1], citations[1], descriptions[1], year[1], links[1], dois[1])
-  colnames(df) <- c('title', 'citation', 'description', 'year', 'links', 'doi')
+  names(dois) <- c('dois', 'sourcefile')
+  df <- data.frame(titles[,2], titles[,1], citations[,1], descriptions[,1], year[,1], links[,1], dois[,1])
+  colnames(df) <- c('sourcefile', 'title', 'citation', 'description', 'year', 'links', 'doi')
   return(df)
 }
 

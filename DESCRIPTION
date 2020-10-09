@@ -1,12 +1,30 @@
-Package: test
+Package: GSscraper
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Scrapes Citation Information From Google Scholar Results
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: 
+    person(given = "Neal",
+               family = "Haddaway",
+               role = c("aut", "cre"),
+               email = "nealhaddaway@gmail.com",
+               comment = c(ORCID = "0000-0003-3902-2234"))
+Maintainer: Neal R Haddaway <nealhaddaway@gmail.com>
+Description: Generate URLs for pages of search results from Google Scholar 
+    using combinations of AND, OR, '"", and NOT Boolean operators and syntax,
+    along with title only searches, patent and citation searches, and author, 
+    year and source fields (as provided by the full Advanced search facility).
+    Functions also exist to download all given pages of search results from 
+    these URLs, and then locally scrape citation information from within them. 
+License: GPL-3
+Imports: 
+    mgsub,
+    stringr,
+    tm,
+    xml2
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
