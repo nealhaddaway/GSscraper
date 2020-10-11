@@ -16,7 +16,7 @@
 #' save_html(url, pause = 5, backoff = FALSE);
 #' @return An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
 #' for clarity. Files are saved to the working directory. A pause notification is printed to the
-#' console.tm::removePunctuation(url)
+#' console.
 #' @export
 save_html <- function(url, path = '', pause = 4, backoff = FALSE){
   t0 <- Sys.time()
