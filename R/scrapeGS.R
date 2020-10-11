@@ -12,23 +12,23 @@ get_info <- function(){
   codes <- get_htmls_code()
   code_lines <- mapply(split_by_div, codes)
   titles <- as.data.frame(mapply(get_titles, code_lines)) %>%
-    stack()
+    utils::stack()
   names(titles) <- c('title', 'sourcefile')
   citations <- as.data.frame(mapply(get_citations, code_lines)) %>%
-    stack()
+    utils::stack()
   names(citations) <- c('citations', 'sourcefile')
   authors <- as.data.frame(mapply(get_authors, code_lines)) %>%
-    stack()
+    utils::stack()
   names(authors) <- c('authors', 'sourcefile')
   descriptions <- as.data.frame(mapply(get_descriptions, code_lines)) %>%
-    stack()
+    utils::stack()
   names(descriptions) <- c('descriptions', 'sourcefile')
   year <- as.data.frame(mapply(get_years, code_lines))
   year[year == 'character(0)'] <- NA
-  year <- stack(year)
+  year <- utils::stack(year)
   names(year) <- c('year', 'sourcefile')
   links <- as.data.frame(mapply(get_links, code_lines)) %>%
-    stack()
+    utils::stack()
   names(links) <- c('links', 'sourcefile')
   dois <- links2dois(links[,1])
   names(dois) <- 'dois'
@@ -221,7 +221,7 @@ get_links <- function(html){
 #' holding article information, where they are contained within (e.g.
 #' 'https://link.springer.com/article/10.1186/1475-2875-13-446' contains the DOI
 #' 10.1186/1475-2875-13-446).
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param link A vector of lines consisting of the html code for a webpage
 #' @return A doi
 #' @examples
 #' link <- 'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0189268'
@@ -244,7 +244,7 @@ link2doi <- function(link){
 #' holding article information, where they are contained within (e.g.
 #' 'https://link.springer.com/article/10.1186/1475-2875-13-446' contains the DOI
 #' 10.1186/1475-2875-13-446).
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param links A vector of lines consisting of the html code for a webpage
 #' @return A vector of DOIs
 #' @examples
 #' dois <- links2dois(links)

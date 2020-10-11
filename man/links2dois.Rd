@@ -7,7 +7,7 @@
 links2dois(links)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{links}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A vector of DOIs

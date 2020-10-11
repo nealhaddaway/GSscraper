@@ -1,6 +1,6 @@
 #' Download one results page as html file
 #'
-#' @Description Downloads one page of Google Scholar results from a URLs as html files with
+#' @description Downloads one page of Google Scholar results from a URLs as html files with
 #' a specific wait-time to avoid IP address blocking.
 #' @param url One URLs corresponding to a page of Google Scholar search results.
 #' @param path The path in which the file should be saved. The default is to save in the working directory.
@@ -16,13 +16,15 @@
 #' save_html(url, pause = 5, backoff = FALSE);
 #' @return An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
 #' for clarity. Files are saved to the working directory. A pause notification is printed to the
-#' console.
+#' console.tm::removePunctuation(url)
 #' @export
 save_html <- function(url, path = '', pause = 4, backoff = FALSE){
   t0 <- Sys.time()
-  download.file(url,
+  utils::download.file(url,
                 destfile = paste(path,
-                                 tm::removePunctuation(url),
+                                 paste('page',
+                                       sub('022.*', '', (gsub("\\D", "", url))),
+                                       sep = '_'),
                                  '.html',
                                  sep = ''),
                 method = 'auto',

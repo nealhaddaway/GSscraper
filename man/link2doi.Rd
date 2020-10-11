@@ -7,7 +7,7 @@
 link2doi(link)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{link}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A doi

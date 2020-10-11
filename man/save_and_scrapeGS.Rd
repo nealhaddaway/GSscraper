@@ -76,8 +76,6 @@ If set to TRUE, the time between calls is varied depending on how long the serve
 original request. The responsive back-off time is set to multiple the response time by the `pause` time: i.e.
 if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 be employed before the next call. The default for back-off is `FALSE`.}
-
-\item{urls}{One or more URLs corresponding to pages of Google Scholar search results.}
 }
 \value{
 A dataframe containing all extractable information from all html files in the working

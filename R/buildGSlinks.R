@@ -37,7 +37,13 @@
 #' not_terms <- c('lobster', 'coral')
 #' year_from <- 1900
 #' year_to <- 2020
-#' link <- buildGSlinks(and_terms, exact_phrase, or_terms, not_terms, pages = 1, authors = 'haddaway', source = 'freshwater')
+#' link <- buildGSlinks(and_terms,
+#'     exact_phrase,
+#'     or_terms,
+#'     not_terms,
+#'     pages = 1,
+#'     authors = 'haddaway',
+#'     source = 'freshwater')
 #' link;
 #' @return A link containing the specified search results.
 #' @export

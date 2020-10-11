@@ -28,7 +28,6 @@
 #' be performed on article titles only or anywhere in the record. The default is FALSE.
 #' @param authors The names of authors searched for.
 #' @param source The name of the source of the articles (e.g. academic journal).
-#' @param urls One or more URLs corresponding to pages of Google Scholar search results.
 #' @param path The path in which the files should be saved. The default is to save in the working directory.
 #' @param pause Integer specifying the number of seconds to wait between download attempts. The
 #' default value is 4 seconds.
@@ -100,12 +99,12 @@ save_and_scrapeGS <- function(and_terms = '',
 #' head(crossref_results);
 #' @return A list of (lists of) CrossRef citations for all retrieved records.
 crossref_lookup <- function(data){
-  dois <- na.omit(info$DO)
-  titles <- dplyr::filter(info, is.na(DO) == TRUE)$TI
+  dois <- stats::na.omit(data$DO)
+  titles <- dplyr::filter(data, is.na(data$DO) == TRUE)$TI
   doi_query <- rcrossref::cr_works(dois = dois)
 
   search_title <- function(x) {
-    result <- cr_works(flq = c(query.bibliographic = x))
+    result <- rcrossref::cr_works(flq = c(query.bibliographic = x))
     result <- result$data[1,]
     return(result)
   }

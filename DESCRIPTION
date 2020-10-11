@@ -18,12 +18,17 @@ Description: Generate URLs for pages of search results from Google Scholar
 License: GPL-3
 Imports: 
     devtools,
+    dplyr,
     listviewer,
+    magrittr,
     mgsub,
+    rcrossref,
+    stats,
     stringr,
     textclean,
     tibble,
     tm,
+    utils,
     xml2
 Suggests: 
     knitr,
