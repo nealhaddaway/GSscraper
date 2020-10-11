@@ -1,0 +1,174 @@
+---
+title: "Search Google Scholar and scrape citations from search results"
+author: "Neal R Haddaway"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Search Google Scholar and scrape citations from search results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  error = TRUE
+)
+```
+
+Google Scholar is a powerful 'lookup' search facility (i.e. a tool for rapidly and efficiently finding reevant documents). It may also be a useful addition to bibliographic database searches in 'exploratory' and 'systematic' searches. The search fucntion is intuitive and easy to use, with a suite of relatively powerful advanced search functions available under the hood.
+
+Google Scholar is not without its problems, however. It does not support full Boolean searches - only one set of 'OR' terms and one set of 'AND' terms can be used, and it is unclear whether mutliple phrases can be searched properly. In addition, only the first 1,000 search results are visible, and the sorting order for results is an integral part of the Google algorithm - something that is not made public. In short - we don't know why the top 1,000 records are shown - and they may not be representative of the evidence base as a whole.
+
+That said, It is sometimes useful to use Google Scholar not just to find specific articles, but also to collate an evidence base. In these instances, it would be useful to be able to download the visible search results. Citations can be exported one-by-one, but there is also a limit to how many citations can be exported before the system blocks your IP address as it detects a high level of activity. Furthermore, exporting 1,000 search results one-by-one would be prohibitively time-consuming.
+
+Although Google Scholar searches are not replicable (i.e. two people conducting the same search in different locations may end up with different visisble search results), this package also helps to increase transparency of searching activities by saving search the results as HTML files.
+
+This package helps you to do three things in Google Scholar:
+
+1. Generate a list of viable URLs that lead to pages of Google Scholar search results based on complex sets of search terms
+2. Save up to 100 pages of search results (corresponding to the maximum of 1,000 visible records) as HTML files to your computer
+3. Scrape these locally stored HTML files to extract search results as partial citations (based on all information provided by Google Scholar)
+
+Whilst other software options are available that may also do this, this package is unique in that it saves search results for transparency of search activities, and because it exports publisher URLs and digital object identifiers (DOIs) where reported. These unique data make it much easier to identify duplication across searches of other databases, and to lookup full citation information through platforms like CrossRef <https://www.crossref.org/>.
+
+
+## Generating URLS for search result pages
+
+Begin by installing the development version of the package from Github with:
+
+```{r, results = FALSE}
+install.packages("devtools", repos = "http://cran.us.r-project.org")
+devtools::install_github("nealhaddaway/GSscraper")
+library(GSscraper)
+```
+
+
+Google Scholar allows the following information to be searched through it's main interface and through the advanced search function [terms in square brackets represent the function input equivalents]:
+
+* with all of the words (terms separated by AND in Boolean search logic) [`and_terms`]
+* with the exact phrase (exact phrases in Boolean search logic) [`exact_phrase`]
+* with at least one of the words [terms separated by OR in Boolean search logic) [`or_terms`]
+* without the words (terms separated by NOT in Boolean search logic) [`not_terms`]
+* where my words occur: anywhere in the article / in the title of the article [`titlesearch = TRUE`, default is `FALSE`]
+* authored by [`authors`]
+* published in (the source name, e.g. the journal) [`source`]
+* dated between (years) [`year_from` and `year_to`]
+
+Using the `buildGSlink()` function, you can input any of these fields and generate one or more URLs for pages of search results. In addition to the above fields, the following information can be provided. Empty fields will result in use of defaults or non-use of the field):
+
+* start page (the page of results you want to start generating from) [`start_page`, default is `1`]
+* pages (the number of pages to generate URLs for following on from the start page) [`pages`, default is `1`]
+* language (the language used for searches and Google Scholar's interface) [`language`, default is `en` (English)]
+* include patents in the search [`incl_pat = TRUE`, default is `TRUE`]
+* include citations in the search [`incl_cit = TRUE`, default is `TRUE`]
+
+Consider this example:
+
+```{r}
+and_terms <- c('river', 'aquatic')
+exact_phrase <- c('water chemistry')
+or_terms <- c('crayfish', 'fish')
+not_terms <- c('lobster', 'coral')
+year_from <- 1900
+year_to <- 2020
+link <- buildGSlinks(and_terms = and_terms, 
+                     exact_phrase = exact_phrase, 
+                     or_terms = or_terms, 
+                     not_terms = not_terms)
+link
+```
+
+The output `"https://scholar.google.co.uk/scholar?start=0&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5"` is a functioning URL constructed from the inputs we provided above (including some defaults, such as the inclusion of citations [`as_vis=0,5`] and patents [`as_sdt=0,5`]).
+
+We can modify this to provide us with a full list of viable URLS for all pages of search results - up to 1,000 records across 100 pages as follows:
+
+```{r}
+links <- buildGSlinks(and_terms = and_terms, 
+                     exact_phrase = exact_phrase, 
+                     or_terms = or_terms, 
+                     not_terms = not_terms,
+                     start_page = 1,
+                     pages = 100)
+head(links)
+```
+
+We can see that the links vary here only in the `start=` parameter, indicating the record from which each page of results should be displayed.
+
+
+## Downloading pages of search results as HTML files
+
+Now that we have our list of URLs, we can download each page of results as an HTML file using the `save_htmls()` function. The function pauses for a set number of seconds (the default is 4 seconds) [specified by the input `pause = 4`]. This pause between calls is an attempt to avoid your IP address being blocked by Google Scholar. It's always a good idea to avoid excessive calls to Google Scholar, so it is good practice to try first with a small number of URLs. 
+
+You can set the function to alter the time between calls depending on how long the server takes to respond (`backoff = TRUE`): this may further help to reduce the chances of being blocked by Google Scholar. This responsive pausing multiplies the time taken for the server to respond by the sleep time and pauses this long before subsequent calls.
+
+By default, this function downloads the files to the working directory unless otherwise specified. 
+
+```{r, eval = FALSE}
+try_links <- links[1:5]
+save_htmls(urls = try_links, pause = 5)
+```
+
+
+## Scrape HTML files
+
+Now we have our results downloaded, we can scrape them locally for citation information.
+
+The `get_info()` function loads in all HTML files in the working directory and scrapes the following data for each record from the HTML(s) (codes in brackets correspond to the .ris file equivalent field codes):
+
+* The article `title` (TI)
+* The provided citation information (`citations`)
+* The article `authors` (AU)
+* The provided short `description` (AB)
+* The publication `year` (PY)
+* The `link` to the article record (most often the publisher's website) (UR)
+* The digital object identifier (`doi`) if it is provided within the link URL (DO)
+
+This returns a tibble as follows:
+
+```{r, eval = FALSE}
+get_info()
+```
+```{r, echo = FALSE}
+info <- tibble::as_tibble(readRDS('info.rds'))
+info
+```
+
+We can then use the DOIs that were pulled from the Google Scholar links to query CrossRef to obtain full citation data using the `rcrossref` package as follows:
+
+```{r, warning = FALSE}
+library('rcrossref')
+refs <- cr_works(dois = info$DO)
+refs <- refs$data
+listviewer::jsonedit(refs, mode = "view", width = '100%', height = '500px')
+```
+
+Finally, we can also search CrossRef for the records lacking DOIs based on title matching, as follows:
+
+```{r}
+no_doi <- dplyr::filter(info, is.na(DO) == TRUE)
+query_titles <- no_doi$TI
+search_title <- function(x) {
+  result <- cr_works(flq = c(query.bibliographic = x))
+  result <- result$data[1,]
+  return(result)
+}
+results <- mapply(search_title, query_titles)
+listviewer::jsonedit(results, mode = "view", width = '100%', height = '500px')
+```
+
+
+## Wrapper function
+
+All of the stages above can be performed together by making use of the global wrapper function `save_and_scrapeGS()` as follows:
+
+```{r}
+and_terms <- c('river', 'aquatic')
+exact_phrase <- c('water chemistry')
+or_terms <- c('crayfish', 'fish')
+not_terms <- c('lobster', 'coral')
+year_from <- 1900
+year_to <- 2020
+info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 10)
+```

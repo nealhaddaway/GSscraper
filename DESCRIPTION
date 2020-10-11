@@ -17,9 +17,12 @@ Description: Generate URLs for pages of search results from Google Scholar
     these URLs, and then locally scrape citation information from within them. 
 License: GPL-3
 Imports: 
+    devtools,
+    listviewer,
     mgsub,
     stringr,
     textclean,
+    tibble,
     tm,
     xml2
 Suggests: 

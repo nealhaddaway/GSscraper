@@ -1,0 +1,117 @@
+#' Global wrapper function for generating, saving and scraping info
+#'
+#' @description Function wraps the `buildGSlinks()`, `save_htmls()`, and scrape functions.
+#' @param and_terms Vector of alphanumeric terms searched using the AND Boolean operator,
+#' specified by Google Scholar as 'with all of the words'.
+#' @param exact_phrase Vector of alphanumeric terms enclosed in inverted commas and searched
+#' as phrases (e.g. "large cat"), specified by Google Scholar as 'with the exact phrase'.
+#' @param or_terms Vector of alphanumeric terms searched using the OR Boolean operator,
+#' specified by Google Scholar as 'with at least one of the words'.
+#' @param not_terms Vector of alphanumeric terms searched using the NOT Boolean operator,
+#' specified by Google Scholar as 'without the words'.
+#' @param language Two-letter language code for search language. The default is 'en' (English).
+#' @param year_from Integer full numeric year (e.g. 2000) from which searching will be performed
+#' (inclusive). If no value provided, all years are searched.
+#' @param year_to Integer full numeric year (e.g. 2020) to which searching will be performed
+#' (inclusive). If no value provided, all years are searched.
+#' @param start_page Integer specifying which page(s) of search results should be displayed.
+#' If multiple pages are selected, multiple URLs are returned, one for each page of ten
+#' search results. The default is set to generate a list of 100 URLs (maximum set of Google
+#' Scholar results visible).
+#' @param pages Integer for the number of pages of search results to be returned (one link per
+#' page). A maximum of 100 pages can be displayed in Google Scholar. The default value is 1.
+#' @param incl_cit Logical argument (TRUE or FALSE) specifying whether citations should be
+#' included in the search
+#' @param incl_pat Logical argument (TRUE or FALSE) specifying whether patents should be
+#' included in the search
+#' @param titlesearch Logical argument (TRUE or FALSE) specifying whether the search should
+#' be performed on article titles only or anywhere in the record. The default is FALSE.
+#' @param authors The names of authors searched for.
+#' @param source The name of the source of the articles (e.g. academic journal).
+#' @param urls One or more URLs corresponding to pages of Google Scholar search results.
+#' @param path The path in which the files should be saved. The default is to save in the working directory.
+#' @param pause Integer specifying the number of seconds to wait between download attempts. The
+#' default value is 4 seconds.
+#' @param backoff A logical argument (TRUE or FALSE) specifying whether responsive backing-off should be used.
+#' If set to TRUE, the time between calls is varied depending on how long the server takes to respond to the
+#' original request. The responsive back-off time is set to multiple the response time by the `pause` time: i.e.
+#' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
+#' be employed before the next call. The default for back-off is `FALSE`.
+#' @return A dataframe containing all extractable information from all html files in the working
+#' directory.
+#' @importFrom magrittr "%>%"
+#' @examples
+#' and_terms <- c('river', 'aquatic')
+#' exact_phrase <- c('water chemistry')
+#' or_terms <- c('crayfish', 'fish')
+#' not_terms <- c('lobster', 'coral')
+#' year_from <- 1900
+#' year_to <- 2020
+#' info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 10);
+#'@export
+save_and_scrapeGS <- function(and_terms = '',
+                              exact_phrase = '',
+                              or_terms = '',
+                              not_terms = '',
+                              language = 'en',
+                              year_from = '',
+                              year_to = '',
+                              start_page = 1,
+                              pages = 1,
+                              incl_cit = TRUE,
+                              incl_pat = TRUE,
+                              titlesearch = FALSE,
+                              authors = '',
+                              source = '',
+                              path = '',
+                              pause = 4,
+                              backoff = FALSE){
+  links <- buildGSlinks(and_terms = and_terms,
+                        exact_phrase = exact_phrase,
+                        or_terms = or_terms,
+                        not_terms = not_terms,
+                        language = language,
+                        year_from = year_from,
+                        year_to = year_to,
+                        start_page = start_page,
+                        pages = pages,
+                        incl_cit = incl_cit,
+                        incl_pat = incl_pat,
+                        titlesearch = titlesearch,
+                        authors = authors,
+                        source = source)
+  save_htmls(urls = links,
+    path = path,
+    pause = pause,
+    backoff = backoff)
+  info <- get_info()
+  return(info)
+}
+
+
+#' Global wrapper for CrossRef lookup based on scraped Google Scholar results
+#'
+#' @description Function wraps doi and title lookups for scraped results from Google
+#' Scholar results pages.
+#' @param data dataframe output object from `save_and_scrapeGS()`, containing digital
+#' object identifiers (DOIs; column DO) and article titles (column TI).
+#' @examples
+#' crossref_results <- crossref_lookup(info)
+#' head(crossref_results);
+#' @return A list of (lists of) CrossRef citations for all retrieved records.
+crossref_lookup <- function(data){
+  dois <- na.omit(info$DO)
+  titles <- dplyr::filter(info, is.na(DO) == TRUE)$TI
+  doi_query <- rcrossref::cr_works(dois = dois)
+
+  search_title <- function(x) {
+    result <- cr_works(flq = c(query.bibliographic = x))
+    result <- result$data[1,]
+    return(result)
+  }
+
+  title_query <- mapply(search_title, titles)
+
+  return(c(doi_query, title_query))
+
+}

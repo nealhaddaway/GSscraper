@@ -3,7 +3,6 @@
 #' Function takes as input a partial Boolean search string and produces a functioning (set of)
 #' URLs; one for each page og search results on Google Scholar.
 #' @description Constructs series of Google Scholar search page URLs
-
 #' @param and_terms Vector of alphanumeric terms searched using the AND Boolean operator,
 #' specified by Google Scholar as 'with all of the words'.
 #' @param exact_phrase Vector of alphanumeric terms enclosed in inverted commas and searched
@@ -104,7 +103,9 @@ buildGSlinks <- function(and_terms = '',
                          sep = '')
     }
 
-    language <- paste('&hl=', language, sep = '') #specify the language
+    language <- paste('&hl=',
+                      language,
+                      sep = '') #specify the language
 
     if((year_from == '') == TRUE){ #specify the start year
       year_from <- ''

@@ -30,10 +30,11 @@ get_info <- function(){
   links <- as.data.frame(mapply(get_links, code_lines)) %>%
     stack()
   names(links) <- c('links', 'sourcefile')
-  dois <- links2dois(code_lines)
-  names(dois) <- c('dois', 'sourcefile')
-  df <- data.frame(titles[,2], titles[,1], citations[,1], authors[,1], descriptions[,1], year[,1], links[,1], dois[,1])
+  dois <- links2dois(links[,1])
+  names(dois) <- 'dois'
+  df <- data.frame(titles[,2], titles[,1], citations[,1], authors[,1], descriptions[,1], year[,1], links[,1], dois)
   colnames(df) <- c('sourcefile', 'TI', 'citation', 'AU', 'AB', 'PY', 'UR', 'DO')
+  df <- tibble::as_tibble(df)
   return(df)
 }
 
@@ -65,6 +66,7 @@ get_html_code <- function(filename){
 #'@export
 get_htmls_code <- function(){
   filenames <- list.files(getwd())
+  filenames <- filenames[grep('.html', filenames)] #select only the HTML files in the working directory
   x <- as.list(mapply(get_html_code, filenames))
   return(x)
 }
@@ -95,7 +97,7 @@ split_by_div <- function(html) {
 #' titles <- get_titles(lines);
 #' @export
 get_titles <- function(html){
-  Sys.setlocale('LC_ALL','C')
+  #Sys.setlocale('LC_ALL','C')
   y <- grep("gs_ri", html) #find location of lines containing GS title tag 'gs_ri'
   titles <- html[y] #extract lines
   titles <- (gsub("<.*?>", "", titles))[2:11] #remove code inside '<>'
@@ -222,20 +224,9 @@ get_links <- function(html){
 #' @param html A vector of lines consisting of the html code for a webpage
 #' @return A doi
 #' @examples
-#' link <- 'http://scholarworks.uni.edu/cgi/viewcontent.cgi?article=1098&amp;context=pias'
+#' link <- 'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0189268'
 #' doi <- link2doi(link)
-#' doi
-#' links <- c('http://scholarworks.uni.edu/cgi/viewcontent.cgi?article=1098&amp;context=pias',
-#' 'https://www.sciencedirect.com/science/article/pii/S1050464883710429',
-#' 'https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/110136',
-#' 'https://europepmc.org/article/med/24364302',
-#' 'https://onlinelibrary.wiley.com/doi/abs/10.1002/aqc.2470',
-#' 'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0042723',
-#' 'https://www.nrcresearchpress.com/doi/abs/10.1139/f95-144',
-#' 'https://bioone.org/journals/AMBIO-A-Journal-of-the-Human-Environment/volume-29/issue-1/0044-7447-29.1.45/Silicon-Retention-in-River-Basins--Far-reaching-Effects-on/10.1579/0044-7447-29.1.45.short',
-#' 'https://www.jstor.org/stable/25037927',
-#' 'https://www.tandfonline.com/doi/abs/10.1080/146349801317276152')
-#' dois <- mapply(link2doi, links);
+#' doi;
 #' @export
 link2doi <- function(link){
   if(grepl('10\\.', link) == TRUE){
@@ -259,7 +250,7 @@ link2doi <- function(link){
 #' dois <- links2dois(links)
 #' dois;
 #' @export
-links2dois <- function(link){
+links2dois <- function(links){
   x <- as.data.frame(mapply(link2doi, links))
   return(x)
 }

@@ -4,7 +4,7 @@
 \alias{links2dois}
 \title{Extract DOIs from multiple article links}
 \usage{
-links2dois(link)
+links2dois(links)
 }
 \arguments{
 \item{html}{A vector of lines consisting of the html code for a webpage}

@@ -19,18 +19,7 @@ holding article information, where they are contained within (e.g.
 10.1186/1475-2875-13-446).
 }
 \examples{
-link <- 'http://scholarworks.uni.edu/cgi/viewcontent.cgi?article=1098&amp;context=pias'
+link <- 'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0189268'
 doi <- link2doi(link)
-doi
-links <- c('http://scholarworks.uni.edu/cgi/viewcontent.cgi?article=1098&amp;context=pias',
-'https://www.sciencedirect.com/science/article/pii/S1050464883710429',
-'https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/110136',
-'https://europepmc.org/article/med/24364302',
-'https://onlinelibrary.wiley.com/doi/abs/10.1002/aqc.2470',
-'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0042723',
-'https://www.nrcresearchpress.com/doi/abs/10.1139/f95-144',
-'https://bioone.org/journals/AMBIO-A-Journal-of-the-Human-Environment/volume-29/issue-1/0044-7447-29.1.45/Silicon-Retention-in-River-Basins--Far-reaching-Effects-on/10.1579/0044-7447-29.1.45.short',
-'https://www.jstor.org/stable/25037927',
-'https://www.tandfonline.com/doi/abs/10.1080/146349801317276152')
-dois <- mapply(link2doi, links);
+doi;
 }
