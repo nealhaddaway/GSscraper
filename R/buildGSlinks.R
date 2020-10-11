@@ -120,8 +120,8 @@ buildGSlinks <- function(and_terms = '',
                        year_from,
                        sep = '')
     }
-    if((year_from == '') == TRUE){ #specify the stop year
-      year_from <- ''
+    if((year_to == '') == TRUE){ #specify the stop year
+      year_to <- ''
     } else {
       year_to <- paste('&as_yhi=',
                        year_to,
