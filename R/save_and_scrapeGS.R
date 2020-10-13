@@ -84,6 +84,119 @@ save_and_scrapeGS <- function(and_terms = '',
     pause = pause,
     backoff = backoff)
   info <- get_info()
+
+  report <- paste('Search parameters:',
+                  paste('All these words: ',
+                        paste(and_terms,
+                              collapse = '; '),
+                        sep = ''),
+                  paste('This exact word or phrase: ',
+                        paste('"',
+                              trimws(exact_phrase),
+                              '"',
+                              sep = ''),
+                        sep = ''),
+                  paste('Any these words: ',
+                        paste(or_terms,
+                              collapse = '; '),
+                        sep = ''),
+                  paste('None of these words: ',
+                        paste(not_terms,
+                              collapse = '; '),
+                        sep = ''),
+                  if(language == ''){
+                    'Language: Any'
+                  } else {
+                    paste('Language: ',
+                          language,
+                          sep = '')
+                  },
+                  paste('Between and including these years:',
+                        if(year_from == ''){
+                          'all'
+                        } else {
+                          year_from
+                        },
+                        'and',
+                        if(year_to == ''){
+                          'now'
+                        } else {
+                          year_to
+                        },
+                        sep = ' '),
+                  if(pages == ''){
+                    'Number of pages exported: 1'
+                  } else {
+                    paste('Number of pages exported: ',
+                          pages,
+                          sep = '')
+                  },
+                  if(start_page == ''){
+                    'Starting from page: 1'
+                  } else {
+                    paste('Starting from page: ',
+                          start_page,
+                          sep = '')
+                  },
+                  if(incl_cit == ''){
+                    'Citations included: TRUE'
+                  } else {
+                    paste('Citations included: ',
+                          incl_cit,
+                          sep = '')
+                  },
+                  if(incl_pat == ''){
+                    'Patents included: TRUE'
+                  } else {
+                    paste('Citations included: ',
+                          incl_pat,
+                          sep = '')
+                  },
+                  if(titlesearch == ''){
+                    'Search only in the title: FALSE'
+                  } else {
+                    paste('Search only in the title: ',
+                          titlesearch,
+                          sep = '')
+                  },
+                  paste('Authors:',
+                        authors,
+                        sep = ' '),
+                  paste('Source:',
+                        source,
+                        sep = ' '),
+                  if(path == ''){
+                    paste('Files saved to working directory: ',
+                          getwd(),
+                          sep = '')
+                    } else {
+                      paste('Files saved to working directory: ',
+                            path,
+                            sep = ' ')
+                      },
+                  if(pause == ''){
+                    'Paused 4 seconds between calls.'
+                  } else {
+                    paste('Paused ',
+                          pause,
+                          ' seconds between calls',
+                          sep = '')
+                  },
+                  if(backoff == ''){
+                    'Sensitive backing off not employed (see help files for more information).'
+                  } else {
+                    'Sensitive backing off employed (see help files for more information).'
+                  },
+                  paste('Search date, time, timezone: ',
+                        Sys.time(),
+                        sep = ''),
+                  '\n',
+                  'Google Scholar search pages exported:',
+                  paste(links,
+                        collapse = '\n'),
+                  '\n',
+                  sep = '\n')
+  cat(report, file = 'searchreport.txt')
   return(info)
 }
 
