@@ -37,31 +37,119 @@
 #' not_terms <- c('lobster', 'coral')
 #' year_from <- 1900
 #' year_to <- 2020
-#' link <- buildGSlinks(and_terms,
-#'     exact_phrase,
-#'     or_terms,
-#'     not_terms,
+#' link <- buildGSlinks(and_terms = and_terms,
+#'     exact_phrase = exact_phrase,
+#'     or_terms = or_terms,
+#'     not_terms = not_terms,
+#'     year_from = year_from,
+#'     year_to = year_to,
 #'     pages = 1,
 #'     authors = 'haddaway',
 #'     source = 'freshwater')
 #' link;
-#' @return A link containing the specified search results.
+#' @return A link containing the specified search results. A text file is saved to the working
+#' directory containing a report of the links generated and the input variables used.
 #' @export
 
 buildGSlinks <- function(and_terms = '',
                          exact_phrase = '',
                          or_terms = '',
                          not_terms = '',
-                         language = 'en',
                          year_from = '',
                          year_to = '',
                          start_page = 1,
                          pages = 1,
+                         language = 'en',
                          incl_cit = TRUE,
                          incl_pat = TRUE,
                          titlesearch = FALSE,
                          authors = '',
                          source = '') {
+  #report
+  report <- paste(
+          'File generated: ',
+          paste('Search date, time, timezone: ',
+                Sys.time(),
+                ' (',
+                Sys.timezone(),
+                ')',
+                sep = ''),
+          '\n',
+          'Search parameters:',
+          paste('All these words: ',
+                paste(and_terms,
+                      collapse = '; '),
+                sep = ''),
+          paste('None of these words: ',
+                paste(not_terms,
+                      collapse = '; '),
+                sep = ''),
+          paste('This exact word or phrase: ',
+                paste('"',
+                      exact_phrase,
+                      '"',
+                      sep = ''),
+                sep = ''),
+          paste('Any these words: ',
+                paste(or_terms,
+                      collapse = '; '),
+                sep = ''),
+          if(language == ''){
+            'Language: Any'
+          } else {
+            paste('Language: ',
+                  language,
+                  sep = '')
+          },
+          paste('Between these years:',
+                year_from,
+                'and',
+                year_to,
+                sep = ' '),
+          if(pages == ''){
+            'Number of pages exported: 1'
+          } else {
+            paste('Number of pages exported: ',
+                  pages,
+                  sep = '')
+          },
+          if(start_page == ''){
+            'Starting from page: 1'
+          } else {
+            paste('Starting from page: ',
+                  start_page,
+                  sep = '')
+          },
+          if(incl_cit == ''){
+            'Citations included: TRUE'
+          } else {
+            paste('Citations included: ',
+                  incl_cit,
+                  sep = '')
+          },
+          if(incl_pat == ''){
+            'Patents included: TRUE'
+          } else {
+            paste('Citations included: ',
+                  incl_pat,
+                  sep = '')
+          },
+          if(titlesearch == ''){
+            'Search only in the title: FALSE'
+          } else {
+            paste('Search only in the title: ',
+                  titlesearch,
+                  sep = '')
+          },
+          paste('Authors:',
+                authors,
+                sep = ' '),
+          paste('Source:',
+                source,
+                sep = ' '),
+          sep = '\n')
+
+
     #calculations
     start_after <- (start_page-1)*10 #calculate start record from start page
 
@@ -206,5 +294,15 @@ buildGSlinks <- function(and_terms = '',
       }
 
     }
+
+    report <- paste(report,
+                    '\n',
+                    'GS links generated:',
+                    paste(link,
+                          collapse = '\n'),
+                    '\n',
+                    sep = '\n')
+
+    cat(report, file = 'linkgenreport.txt')
     return(link)
 }

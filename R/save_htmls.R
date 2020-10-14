@@ -13,7 +13,9 @@
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @examples
 #' url <- 'https://scholar.google.co.uk/scholar?start=0&q=insect+population+%22systematic+review%22&hl=en&as_vis=0,5&as_sdt=0,5'
-#' save_html(url, pause = 5, backoff = FALSE);
+#' save_html(url,
+#'     pause = 5,
+#'     backoff = FALSE);
 #' @return An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
 #' for clarity. Files are saved to the working directory. A pause notification is printed to the
 #' console.
@@ -50,6 +52,7 @@ save_html <- function(url, path = '', pause = 4, backoff = FALSE){
                 'seconds before next attempt.'))
     Sys.sleep(pause)
   }
+
 }
 
 
@@ -86,7 +89,9 @@ save_htmls <- function(urls,
          backoff)
   t1 <- Sys.time()
   response_delay <- round(as.numeric(t1-t0), 3)
+
   print(paste('Downloads finished in',
               response_delay,
               'seconds. Check destination folder to ensure all files were downloaded successfully.'))
+
 }

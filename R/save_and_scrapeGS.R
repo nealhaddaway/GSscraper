@@ -37,7 +37,8 @@
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @return A dataframe containing all extractable information from all html files in the working
-#' directory.
+#' directory. A text file is saved to the working directory containing a report of the links generated and
+#' the input variables used.
 #' @importFrom magrittr "%>%"
 #' @examples
 #' and_terms <- c('river', 'aquatic')
@@ -85,7 +86,15 @@ save_and_scrapeGS <- function(and_terms = '',
     backoff = backoff)
   info <- get_info()
 
-  report <- paste('Search parameters:',
+  report <- paste('File generated: ',
+                  paste('Search date, time, timezone: ',
+                        Sys.time(),
+                        ' (',
+                        Sys.timezone(),
+                        ')',
+                        sep = ''),
+                  '\n',
+                  'Search parameters:',
                   paste('All these words: ',
                         paste(and_terms,
                               collapse = '; '),
@@ -170,7 +179,7 @@ save_and_scrapeGS <- function(and_terms = '',
                           getwd(),
                           sep = '')
                     } else {
-                      paste('Files saved to working directory: ',
+                      paste('Files saved to: ',
                             path,
                             sep = ' ')
                       },
@@ -189,14 +198,18 @@ save_and_scrapeGS <- function(and_terms = '',
                   },
                   paste('Search date, time, timezone: ',
                         Sys.time(),
+                        ' (',
+                        Sys.timezone(),
+                        ')',
                         sep = ''),
-                  '\n',
                   'Google Scholar search pages exported:',
                   paste(links,
                         collapse = '\n'),
                   '\n',
                   sep = '\n')
+
   cat(report, file = 'searchreport.txt')
+
   return(info)
 }
 
