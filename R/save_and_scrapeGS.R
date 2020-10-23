@@ -47,7 +47,7 @@
 #' not_terms <- c('lobster', 'coral')
 #' year_from <- 1900
 #' year_to <- 2020
-#' info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 10);
+#' info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 3);
 #'@export
 save_and_scrapeGS <- function(and_terms = '',
                               exact_phrase = '',

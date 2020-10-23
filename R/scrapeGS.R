@@ -82,7 +82,7 @@ get_htmls_code <- function(){
 #' lines;
 #' @export
 split_by_div <- function(html) {
-  x <- unlist(strsplit(html, "\\<div", useBytes = TRUE))
+  x <- unlist(strsplit(html, '\\<div', useBytes = TRUE))
   return(x)
 }
 
