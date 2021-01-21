@@ -9,11 +9,11 @@ buildGSlinks(
   exact_phrase = "",
   or_terms = "",
   not_terms = "",
-  language = "en",
   year_from = "",
   year_to = "",
   start_page = 1,
   pages = 1,
+  language = "en",
   incl_cit = TRUE,
   incl_pat = TRUE,
   titlesearch = FALSE,
@@ -34,8 +34,6 @@ specified by Google Scholar as 'with at least one of the words'.}
 \item{not_terms}{Vector of alphanumeric terms searched using the NOT Boolean operator,
 specified by Google Scholar as 'without the words'.}
 
-\item{language}{Two-letter language code for search language. The default is 'en' (English).}
-
 \item{year_from}{Integer full numeric year (e.g. 2000) from which searching will be performed
 (inclusive). If no value provided, all years are searched.}
 
@@ -49,6 +47,8 @@ Scholar results visible).}
 
 \item{pages}{Integer for the number of pages of search results to be returned (one link per
 page). A maximum of 100 pages can be displayed in Google Scholar. The default value is 1.}
+
+\item{language}{Two-letter language code for search language. The default is 'en' (English).}
 
 \item{incl_cit}{Logical argument (TRUE or FALSE) specifying whether citations should be
 included in the search}
@@ -64,7 +64,8 @@ be performed on article titles only or anywhere in the record. The default is FA
 \item{source}{The name of the source of the articles (e.g. academic journal).}
 }
 \value{
-A link containing the specified search results.
+A link containing the specified search results. A text file is saved to the working
+directory containing a report of the links generated and the input variables used.
 }
 \description{
 Constructs series of Google Scholar search page URLs
@@ -80,10 +81,12 @@ or_terms <- c('crayfish', 'fish')
 not_terms <- c('lobster', 'coral')
 year_from <- 1900
 year_to <- 2020
-link <- buildGSlinks(and_terms,
-    exact_phrase,
-    or_terms,
-    not_terms,
+link <- buildGSlinks(and_terms = and_terms,
+    exact_phrase = exact_phrase,
+    or_terms = or_terms,
+    not_terms = not_terms,
+    year_from = year_from,
+    year_to = year_to,
     pages = 1,
     authors = 'haddaway',
     source = 'freshwater')

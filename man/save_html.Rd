@@ -23,13 +23,15 @@ be employed before the next call. The default for back-off is `FALSE`.}
 \value{
 An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
 for clarity. Files are saved to the working directory. A pause notification is printed to the
-console.tm::removePunctuation(url)
+console.
 }
 \description{
 Downloads one page of Google Scholar results from a URLs as html files with
 a specific wait-time to avoid IP address blocking.
 }
 \examples{
-url <- 'https://scholar.google.co.uk/scholar?start=50&q=insect+population+\%22systematic+review\%22&hl=en&as_vis=0,5&as_sdt=0,5'
-save_html(url, pause = 5, backoff = FALSE);
+url <- 'https://scholar.google.co.uk/scholar?start=0&q=insect+population+\%22systematic+review\%22&hl=en&as_vis=0,5&as_sdt=0,5'
+save_html(url,
+    pause = 5,
+    backoff = FALSE);
 }

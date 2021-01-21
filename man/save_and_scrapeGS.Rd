@@ -79,7 +79,8 @@ be employed before the next call. The default for back-off is `FALSE`.}
 }
 \value{
 A dataframe containing all extractable information from all html files in the working
-directory.
+directory. A text file is saved to the working directory containing a report of the links generated and
+the input variables used.
 }
 \description{
 Function wraps the `buildGSlinks()`, `save_htmls()`, and scrape functions.
@@ -91,5 +92,5 @@ or_terms <- c('crayfish', 'fish')
 not_terms <- c('lobster', 'coral')
 year_from <- 1900
 year_to <- 2020
-info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 10);
+info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 3);
 }
