@@ -277,35 +277,31 @@ server <- function(input, output) {
     #scrape HTML files
     observeEvent(input$scrape_HTMLs, {
 
-        if (any(identical(input$websites, ''), identical(input$search, ''), identical(input$pages, ''))==TRUE){
-        } else {
-
-            df <- data.frame()
-            for(i in 1:length(rv$htmls)){
-                data <- get_info(unlist(rv$htmls[i]))
-                print(data)
-                df <- dplyr::bind_rows(df, data)
-            }
-            df <- df[!duplicated(df), ]
-            rv$data <- df
-
-            output$data <- renderDataTable({
-                rv$data
-            })
-
-            output$save_report <- renderText({
-                paste0('A total of ', nrow(rv$data),' search results have been exported and are shown in the table below.')
-            })
-
-            output$downloadData <- downloadHandler(
-                filename = function() {
-                    paste("results.csv", sep = "")
-                },
-                content = function(file) {
-                    write.csv(rv$data, file, row.names = FALSE)}
-                )
-
+        df <- data.frame()
+        for(i in 1:length(rv$htmls)){
+            data <- get_info(unlist(rv$htmls[i]))
+            print(data)
+            df <- dplyr::bind_rows(df, data)
         }
+        df <- df[!duplicated(df), ]
+        rv$data <- df
+
+        output$data <- renderDataTable({
+            rv$data
+        })
+
+        output$save_report <- renderText({
+            paste0('A total of ', nrow(rv$data),' search results have been exported and are shown in the table below.')
+        })
+
+        output$downloadData <- downloadHandler(
+            filename = function() {
+                paste("results.csv", sep = "")
+            },
+            content = function(file) {
+                write.csv(rv$data, file, row.names = FALSE)}
+        )
+
     })
 
 }

@@ -1,8 +1,8 @@
 #' Download one results page as html file
 #'
-#' @description Downloads one page of Google Scholar results from a URLs as html files with
+#' @description Downloads one page of search results from a URLs as html files with
 #' a specific wait-time to avoid IP address blocking.
-#' @param url One URLs corresponding to a page of Google Scholar search results.
+#' @param url One URLs corresponding to a page of search results.
 #' @param path The path in which the file should be saved. The default is to save in the working directory.
 #' @param pause Integer specifying the number of seconds to wait between download attempts. The
 #' default value is 4 seconds.
@@ -12,46 +12,41 @@
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @examples
-#' url <- 'https://scholar.google.co.uk/scholar?start=0&q=insect+population+%22systematic+review%22&hl=en&as_vis=0,5&as_sdt=0,5'
-#' save_html(url,
-#'     pause = 5,
-#'     backoff = FALSE);
+#' url <- 'https://www.google.com/search?q=site:www.sei.org+climate+change&start=10'
+#' html <- save_html(url, pause = 3, backoff = FALSE)
 #' @return An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
 #' for clarity. Files are saved to the working directory. A pause notification is printed to the
 #' console.
 #' @export
-save_html <- function(url, path = '', pause = 0.5, backoff = FALSE){
+save_html <- function(url, path = '', pause = 0.5, backoff = TRUE){
   t0 <- Sys.time()
-  utils::download.file(url,
-                destfile = paste(path,
-                                 paste('page',
-                                       if(sub('022.*', '', (gsub("\\D", "", url))) == ''){
-                                         '1'
-                                       } else {
-                                         (1+as.numeric(sub('022.*', '', (gsub("\\D", "", url)))))
-                                       },
-                                       sep = '_'),
-                                 '.html',
-                                 sep = ''),
-                method = 'auto',
-                quiet = FALSE)
+
+  pause <- pause * runif(1, 0.5, 1.5)
+
+  #initiate scrape and detect redirect
+  message('Saving search results...\n')
+  html <- RCurl::getURL(url, followlocation=TRUE)
+  names(html) <- url
+
   t1 <- Sys.time()
   response_delay <- round(as.numeric(t1-t0), 3)
   if(backoff == TRUE){
-    print(paste('Request took',
-                response_delay,
+    message(paste('Request took',
+                  round(response_delay, 3),
                 'seconds to perform. Waiting',
-                pause*response_delay,
-                'seconds before next attempt.'))
+                round(pause*response_delay, 3),
+                'seconds before next attempt.\n'))
     Sys.sleep(pause*response_delay)
   } else {
-    print(paste('Request took',
-                response_delay,
+    message(paste('Request took',
+                  round(response_delay, 3),
                 'second(s) to perform. Waiting',
-                pause,
-                'seconds before next attempt.'))
+                round(pause, 3),
+                'seconds before next attempt.\n'))
     Sys.sleep(pause)
   }
+
+  return(html)
 
 }
 
@@ -70,9 +65,9 @@ save_html <- function(url, path = '', pause = 0.5, backoff = FALSE){
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @examples
-#' urls <- c('https://scholar.google.co.uk/scholar?start=50&q=insect+population+%22systematic+review%22&hl=en&as_vis=0,5&as_sdt=0,5',
-#'    'https://scholar.google.co.uk/scholar?start=90&q=insect+population+%22systematic+review%22&hl=en&as_vis=0,5&as_sdt=0,5')
-#' save_htmls(urls, pause = 5);
+#' urls <- c('https://www.google.com/search?q=site:www.sei.org+climate&start=0',
+#'    'https://www.google.com/search?q=site:www.sei.org+climate&start=10')
+#' htmls <- save_htmls(urls, pause = 5)
 #' @return Files are downloaded with a file name corresponding to the URL with punctuation removed
 #' for clarity. Files are saved to the working directory. A pause notification is printed to the
 #' console.
@@ -82,16 +77,23 @@ save_htmls <- function(urls,
                        pause = 0.5,
                        backoff = FALSE){
   t0 <- Sys.time()
-  mapply(save_html,
-         urls,
-         path,
-         pause,
-         backoff)
+  #htmls <- as.list(mapply(save_html,
+  #                urls,
+  #                path,
+  #                pause,
+  #                backoff))
+  htmls <- list()
+  for(i in 1:length(urls)){
+    html <- save_html(urls[i], pause = 0.5, backoff = FALSE)
+    htmls <- c(htmls, html)
+  }
   t1 <- Sys.time()
   response_delay <- round(as.numeric(t1-t0), 3)
 
-  print(paste('Downloads finished in',
-              response_delay,
-              'seconds. Check destination folder to ensure all files were downloaded successfully.'))
+  message(paste('Downloads finished in',
+                round(response_delay, 3),
+              'seconds.'))
+
+  return(htmls)
 
 }
