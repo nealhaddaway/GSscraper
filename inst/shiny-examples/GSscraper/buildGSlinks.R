@@ -237,7 +237,7 @@ buildGSlinks <- function(and_terms = '',
       authors <- ''
     } else {
       authors <- paste('+author:',
-                       paste(authors,
+                       paste(gsub(' ', '+', authors),
                              collapse = '+author:'),
                        sep = '')
     }
@@ -246,7 +246,7 @@ buildGSlinks <- function(and_terms = '',
       source <- ''
     } else {
       source <- paste('+source:',
-                       paste(source,
+                       paste(gsub(' ', '+', source),
                              collapse = '+source:'),
                        sep = '')
     }

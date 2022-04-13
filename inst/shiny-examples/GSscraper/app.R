@@ -8,11 +8,15 @@ library(purrr)
 library(dplyr)
 library(shinyjs)
 library(shinyWidgets)
+library(textclean)
+library(stringi)
+library(mgsub)
 
 source('buildGSlinks.R')
 source('save_htmls.R')
 source('scrapeGS.R')
-source('save_and_scrapeGS.R')
+source('decode_dois.R')
+source('build_ris.R')
 
 # Define UI for application that draws a histogram
 ui <- navbarPage("GSscraper", id = "tabs",
@@ -175,7 +179,10 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                          br(),
                                          conditionalPanel(
                                              condition='input.scrape_HTMLs!=null && input.scrape_HTMLs!=""',
-                                             downloadButton('downloadData', 'Download results as CSV', icon = icon("file-download")))
+                                             downloadButton('downloadData', 'Download results as CSV', icon = icon("file-download")),
+                                             br(),
+                                             br(),
+                                             downloadButton('ris_download', 'Download results as RIS', icon = icon("file-download")))
                                          ),
                                      br(),
                                      br(),
@@ -210,12 +217,6 @@ server <- function(input, output) {
         rv$titlesearch <- if(input$anywhere == 'in the title of the article'){TRUE} else {FALSE}
         rv$authors <- if(is.null(input$authors)==TRUE){''}else{input$authors}
         rv$source <- if(is.null(input$source)==TRUE){''}else{input$source}
-
-        print(rv$year_from)
-        print(rv$year_to)
-        print(rv$start_page)
-        print(rv$pages)
-        print(rv$language)
 
         rv$links <- buildGSlinks(and_terms = rv$and_terms,
                                  exact_phrase = rv$exact_phrase,
@@ -267,6 +268,7 @@ server <- function(input, output) {
         },
         message = function(m) {
             shinyjs::html(id = "text", html = m$message, add = TRUE)})
+        print(rv$htmls[[1]])
 
         output$save_report <- renderText({
             paste0(length(rv$htmls),' pages of results successfully downloaded. Proceed to the "Scrape data" tab to extract search results and download the final dataset.')
@@ -300,6 +302,18 @@ server <- function(input, output) {
             },
             content = function(file) {
                 write.csv(rv$data, file, row.names = FALSE)}
+        )
+
+        rv$ris <- build_ris(rv$data)
+
+        # download articles as RIS
+        output$ris_download <- downloadHandler(
+            filename = function(){
+                paste("GS_results_", Sys.Date(), ".ris", sep = "")
+            },
+            content = function(file) {
+                write.table(rv$ris, file,col.names=FALSE)
+            }
         )
 
     })

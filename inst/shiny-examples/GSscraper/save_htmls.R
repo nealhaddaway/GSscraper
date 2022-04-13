@@ -12,7 +12,7 @@
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @examples
-#' url <- 'https://www.google.com/search?q=site:www.sei.org+climate+change&start=10'
+#' url <- 'https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=testing&btnG='
 #' html <- save_html(url, pause = 3, backoff = FALSE)
 #' @return An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
 #' for clarity. Files are saved to the working directory. A pause notification is printed to the
