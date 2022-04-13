@@ -2,4 +2,6 @@
 
 This package contains a suite of functions to scrape search results from Google Scholar by using a function that pauses before downloading each page of results to avoid IP blocking. It then scrapes the locally saved files for citation relevant information.
 
-The Shiny app can be run locally to provide a user interface. Navigate to 'inst > shiny-examples > GSscraper > app.R' in R Studio and click 'Run app'.
+Run the GSscraper Shiny app on your machine with the following code:
+
+`shiny::runGitHub("GSscraper", "nealhaddaway", subdir = "inst/shiny-examples/GSscraper")`
