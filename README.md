@@ -4,6 +4,6 @@ This package contains a suite of functions to scrape search results from Google 
 
 The Shiny app can be run locally to provide a user interface. Navigate to 'inst > shiny-examples > GSscraper > app.R' in R Studio and click 'Run app'.
 
-Install GSscraper on your machine with the following code:
+Run the GSscraper Shiny app on your machine with the following code:
 
-`devtools::install_github('nealhaddaway/GSscraper')`
+`shiny::runGitHub("GSscraper", "nealhaddaway", subdir = "inst/shiny-examples/GSscraper")`
