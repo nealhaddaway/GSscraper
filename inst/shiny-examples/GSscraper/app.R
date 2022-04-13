@@ -154,6 +154,12 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                          condition='input.google!=null && input.google!=""',
                                          actionButton("download_HTMLs", "Save search results")
                                          ),
+                                     conditionalPanel(
+                                         condition='input.download_HTMLs!=null && input.download_HTMLs!=""',
+                                         br(),
+                                         br(),
+                                         downloadButton('report_download', 'Download search record', icon = icon("file-download"))
+                                         ),
                                      br(),
                                      br(),
                                      shinyjs::useShinyjs(),
@@ -179,10 +185,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                          br(),
                                          conditionalPanel(
                                              condition='input.scrape_HTMLs!=null && input.scrape_HTMLs!=""',
-                                             downloadButton('downloadData', 'Download results as CSV', icon = icon("file-download")),
-                                             br(),
-                                             br(),
-                                             downloadButton('ris_download', 'Download results as RIS', icon = icon("file-download")))
+                                             uiOutput('download_buttons'))
                                          ),
                                      br(),
                                      br(),
@@ -232,6 +235,10 @@ server <- function(input, output) {
                                  incl_cit = rv$incl_cit,
                                  incl_pat = rv$incl_pat,
                                  titlesearch = rv$titlesearch)
+
+        rv$links_report <- rv$links$report
+        rv$links <- rv$links$link
+
         rv$links_tab <- data.frame(num = paste0('link ', seq(1, length(rv$links))), link = rv$links)
 
         #show preview of links
@@ -274,7 +281,18 @@ server <- function(input, output) {
             paste0(length(rv$htmls),' pages of results successfully downloaded. Proceed to the "Scrape data" tab to extract search results and download the final dataset.')
         })
 
+        # download search report
+        output$report_download <- downloadHandler(
+            filename = function(){
+                paste("GSscraper_searchRecord_", Sys.Date(), ".txt", sep = "")
+            },
+            content = function(file) {
+                writeLines(rv$links_report, file)
+            }
+        )
+
     })
+
 
     #scrape HTML files
     observeEvent(input$scrape_HTMLs, {
@@ -282,11 +300,18 @@ server <- function(input, output) {
         df <- data.frame()
         for(i in 1:length(rv$htmls)){
             data <- get_info(unlist(rv$htmls[i]))
-            print(data)
+            #print(data)
             df <- dplyr::bind_rows(df, data)
         }
+        print(df)
         df <- df[!duplicated(df), ]
-        rv$data <- df
+
+        #if function returns a block error, convert it back into a dataframe
+        if(grepl('Error 403', df) == TRUE){
+            rv$data <- data.frame(Error = df)
+        } else {
+            rv$data <- df
+        }
 
         output$data <- renderDataTable({
             rv$data
@@ -304,17 +329,35 @@ server <- function(input, output) {
                 write.csv(rv$data, file, row.names = FALSE)}
         )
 
-        rv$ris <- build_ris(rv$data)
 
-        # download articles as RIS
-        output$ris_download <- downloadHandler(
-            filename = function(){
-                paste("GS_results_", Sys.Date(), ".ris", sep = "")
-            },
-            content = function(file) {
-                write.table(rv$ris, file,col.names=FALSE)
-            }
-        )
+        #if downloaded HTMLs contained a blocking error (403) do nothing
+        if(grepl('Error 403', rv$htmls[[length(rv$htmls)]]) == TRUE){
+
+        } else {
+            rv$ris <- build_ris(rv$data)
+
+            # download articles as RIS
+            output$ris_download <- downloadHandler(
+                filename = function(){
+                    paste("GS_results_", Sys.Date(), ".ris", sep = "")
+                },
+                content = function(file) {
+                    write.table(rv$ris, file,col.names=FALSE)
+                }
+            )
+
+            #UI for download handlers
+            output$download_buttons <- renderUI({
+                tagList(
+                    downloadButton('downloadData', 'Download results as CSV', icon = icon("file-download")),
+                    br(),
+                    br(),
+                    downloadButton('ris_download', 'Download results as RIS', icon = icon("file-download"))
+                )
+            })
+
+
+        }
 
     })
 

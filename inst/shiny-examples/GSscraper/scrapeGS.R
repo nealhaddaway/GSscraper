@@ -24,6 +24,13 @@ get_info <- function(html){
                    year = year[,1],
                    links = links[,1],
                    dois = dois[,1])
+
+  #if df is blank, check to see if error code in html
+  if(all(apply(df, 2, function(x) all(is.na(x)))) == TRUE){
+    error403 <- grepl('Error 403', html)
+    df <- data.frame(error = 'Error 403 - you have been temporarily blocked by Google Scholar. Please wait 24 hours and try again')
+  }
+
   return(df)
 }
 

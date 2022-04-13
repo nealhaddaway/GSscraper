@@ -303,6 +303,7 @@ buildGSlinks <- function(and_terms = '',
                     '\n',
                     sep = '\n')
 
-    cat(report, file = 'linkgenreport.txt')
-    return(link)
+    output <- list(link = link, report = report)
+
+    return(output)
 }
