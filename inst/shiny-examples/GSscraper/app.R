@@ -47,7 +47,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      'GSscraper was produced by Neal Haddaway.', tags$a(href="https://github.com/nealhaddaway/GSscraper/", 'The code is available on Github'), '.',
                                      br(),
                                      br(),
-                                     'Please cite as: Haddaway, NR (2022) GSscraper: An R package and Shiny app for exporting search results from Google Scholar. Zenodo. ', tags$a(href="xxx", "xxx")
+                                     'Please cite as: Haddaway, NR (2022) GSscraper: An R package and Shiny app for exporting search results from Google Scholar. Zenodo. ', tags$a(href="https://doi.org/10.5281/zenodo.6458134", "10.5281/zenodo.6458134")
                                      ),
                               column(2,
                                      br(),tags$img(height = 150, src = "https://raw.githubusercontent.com/nealhaddaway/GSscraper/main/inst/shiny-examples/GSscraper/www/hex.png"))
