@@ -113,8 +113,8 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                            tags$tr(width = "100%",
                                                    tags$td(width = "40%", 'scrape pages', strong('from'), ' - ', strong('to')),
                                                    tags$td(width = "60%",
-                                                           splitLayout(numericInput('start_page', NULL, width =  "100%", value = 1), p(style = 'text-align: center;',' - '),
-                                                                       numericInput('end_page', NULL, width =  "100%", value = 1),
+                                                           splitLayout(numericInput('start_page', NULL, width =  "100%", value = 1, max = 100, step = 1), p(style = 'text-align: center;',' - '),
+                                                                       numericInput('end_page', NULL, width =  "100%", value = 1, max = 100, step = 1),
                                                                        cellWidths = c('45%', '5%', '45%')))
                                                    ),
                                            tags$tr(width = "100%",
@@ -178,18 +178,19 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      br(),
                                      'Now, we can scrape search results based on patterns in the HTML code.',
                                      hr(),
+                                     br(),
                                      conditionalPanel(
                                          condition='input.download_HTMLs!=null && input.download_HTMLs!=""',
                                          actionButton("scrape_HTMLs", "Scrape the results HTMLs"),
+                                         br(),
+                                         br(),
+                                         textOutput('scrape_report'),
                                          br(),
                                          br(),
                                          conditionalPanel(
                                              condition='input.scrape_HTMLs!=null && input.scrape_HTMLs!=""',
                                              uiOutput('download_buttons'))
                                          ),
-                                     br(),
-                                     br(),
-                                     textOutput('scrape_report'),
                                      br(),
                                      dataTableOutput('data'),
                                      br()
@@ -239,7 +240,7 @@ server <- function(input, output) {
         rv$links_report <- rv$links$report
         rv$links <- rv$links$link
 
-        rv$links_tab <- data.frame(num = paste0('link ', seq(1, length(rv$links))), link = rv$links)
+        rv$links_tab <- data.frame(link = rv$links)
 
         #show preview of links
         output$preview <- renderTable({
@@ -275,7 +276,7 @@ server <- function(input, output) {
         },
         message = function(m) {
             shinyjs::html(id = "text", html = m$message, add = TRUE)})
-        print(rv$htmls[[1]])
+        #print(rv$htmls[[1]])
 
         output$save_report <- renderText({
             paste0(length(rv$htmls),' pages of results successfully downloaded. Proceed to the "Scrape data" tab to extract search results and download the final dataset.')
@@ -298,26 +299,28 @@ server <- function(input, output) {
     observeEvent(input$scrape_HTMLs, {
 
         df <- data.frame()
+        report_full <- ''
+        report_page <- data.frame()
         for(i in 1:length(rv$htmls)){
-            data <- get_info(unlist(rv$htmls[i]))
-            #print(data)
+            info <- get_info(unlist(rv$htmls[i]))
+            data <- info$df
+            report_full <- info$report$full
+            report_page <- rbind(report_page, data.frame(info$report$page))
             df <- dplyr::bind_rows(df, data)
         }
-        print(df)
-        df <- df[!duplicated(df), ]
+        rv$report_full <- report_full
+        rv$report_pages <- report_page
+        df <- df[!duplicated(df), ] #remove duplicate rows
+        df <- df[rowSums(is.na(df)) != ncol(df), ] #remove NA rows
 
-        #if function returns a block error, convert it back into a dataframe
-        if(grepl('Error 403', df) == TRUE){
-            rv$data <- data.frame(Error = df)
-        } else {
-            rv$data <- df
-        }
+        rv$data <- df
 
         output$data <- renderDataTable({
             rv$data
         })
 
-        output$save_report <- renderText({
+
+        output$scrape_report <- renderText({
             paste0('A total of ', nrow(rv$data),' search results have been exported and are shown in the table below.')
         })
 

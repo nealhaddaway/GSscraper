@@ -25,13 +25,28 @@ get_info <- function(html){
                    links = links[,1],
                    dois = dois[,1])
 
+  #extract number of results
+  n_results <- code_lines[grep('gs_ab_mdw', code_lines)]
+  n_results <- n_results[grep('results', n_results)]
+  n_results <-  gsub('.', ',', stringr::str_extract_all(tolower(n_results), "(?<=about ).+(?= results ())" )[[1]])
+  report_full <- paste0('Your search resulted in c. ', n_results, ' records')
+
   #if df is blank, check to see if error code in html
   if(all(apply(df, 2, function(x) all(is.na(x)))) == TRUE){
-    error403 <- grepl('Error 403', html)
-    df <- data.frame(error = 'Error 403 - you have been temporarily blocked by Google Scholar. Please wait 24 hours and try again')
+    error <- any(grepl('Error 403', html))
+    if(error == FALSE){
+      error <- 'No further reults on this page'
+    } else {
+      error <- 'Error 403 - you have been temporarily blocked by Google Scholar. Please wait 24 hours and try again'
+    }
+    report_page <- error
+  } else {
+    report_page <- paste0(nrow(df), ' results on this page')
   }
 
-  return(df)
+  output <- list(df = df, report = list(full = report_full, page = report_page))
+
+  return(output)
 }
 
 
@@ -91,6 +106,7 @@ get_citations <- function(code_lines){
   citations$citations <- sub("<", "", citations$citations)
   citations$citations <- gsub('\n', '', citations$citations) #remove line break codes
   citations$citations <- mgsub::mgsub(citations$citations, c('\302', '\240', '\342', '\200', '\246', '\303', '\241', '\305', '\201', '\242', '\223'), c('', '', '', '', '', '', '', '', '', '', ''))
+  citations$citations <- gsub('&#8230;', '…', citations$citations) #replace '&#8230' with ellipsis
   return(citations)
 }
 
@@ -109,6 +125,7 @@ get_authors <- function(code_lines){
   authors <- get_citations(code_lines)
   authors$citations <- sub("\\-.*", "", authors$citations)
   authors$citations <- gsub('\\.\\.\\.', '; et al.', authors$citations)
+  authors$citations <- gsub('&#8230;', '…', authors$citations) #replace '&#8230' with ellipsis
   authors$citations <- gsub(',', ';', authors$citations)
   authors$citations <- textclean::replace_non_ascii(authors$citations)
   return(authors)
