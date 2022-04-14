@@ -1,7 +1,7 @@
-#' Build GS link
+#' Build GS links
 #'
 #' Function takes as input a partial Boolean search string and produces a functioning (set of)
-#' URLs; one for each page og search results on Google Scholar.
+#' URLs; one for each page of search results on Google Scholar.
 #' @description Constructs series of Google Scholar search page URLs
 #' @param and_terms Vector of alphanumeric terms searched using the AND Boolean operator,
 #' specified by Google Scholar as 'with all of the words'.
@@ -31,6 +31,7 @@
 #' @param authors The names of authors searched for.
 #' @param source The name of the source of the articles (e.g. academic journal).
 #' @examples
+#' \dontrun{
 #' and_terms <- c('river', 'aquatic')
 #' exact_phrase <- c('water chemistry')
 #' or_terms <- c('crayfish', 'fish')
@@ -46,11 +47,11 @@
 #'     pages = 1,
 #'     authors = 'haddaway',
 #'     source = 'freshwater')
-#' link;
-#' @return A link containing the specified search results. A text file is saved to the working
-#' directory containing a report of the links generated and the input variables used.
+#' link
+#' }
+#' @return A list containing: 1) ($link) links to the specified search results; and, 2) ($report)
+#' a text string containing a report of the links generated and the input variables used.
 #' @export
-
 buildGSlinks <- function(and_terms = '',
                          exact_phrase = '',
                          or_terms = '',
@@ -237,7 +238,7 @@ buildGSlinks <- function(and_terms = '',
       authors <- ''
     } else {
       authors <- paste('+author:',
-                       paste(authors,
+                       paste(gsub(' ', '+', authors),
                              collapse = '+author:'),
                        sep = '')
     }
@@ -246,7 +247,7 @@ buildGSlinks <- function(and_terms = '',
       source <- ''
     } else {
       source <- paste('+source:',
-                       paste(source,
+                       paste(gsub(' ', '+', source),
                              collapse = '+source:'),
                        sep = '')
     }
@@ -303,6 +304,7 @@ buildGSlinks <- function(and_terms = '',
                     '\n',
                     sep = '\n')
 
-    cat(report, file = 'linkgenreport.txt')
-    return(link)
+    output <- list(link = link, report = report)
+
+    return(output)
 }

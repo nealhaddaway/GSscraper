@@ -1,11 +1,18 @@
 #' Scrape all Google Scholar information
 #'
-#' @description A wrapper for the scraping functions to produce a dataframe of citations for
+#' @description A wrapper for the scraping functions to produce a data frame of citations for
 #' each page of Google Scholar search results.
-#' @return A dataframe containing all extractable information from all html files in the working
-#' directory.
+#' @param html An HTML file read in as a single character string using 'save_htmls()'.
+#' @importFrom mgsub mgsub
+#' @importFrom textclean replace_non_ascii
+#' @importFrom stringr str_extract_all
+#' @importFrom stringr str_extract
+#' @return A data frame containing all information that can be extracted from all html files
+#' in the working directory.
 #' @examples
+#' \dontrun{
 #' info <- get_info(html)
+#' }
 #'@export
 get_info <- function(html){
   code_lines <- split_by_div(html)
@@ -33,11 +40,18 @@ get_info <- function(html){
 
   #if df is blank, check to see if error code in html
   if(all(apply(df, 2, function(x) all(is.na(x)))) == TRUE){
-    error <- any(grepl('Error 403', html))
+    if(any(grepl('Error 403', html))==TRUE){
+      error <- 'Error 403 - you have been temporarily blocked by Google Scholar. Please wait 24 hours and try again'
+    } else if (any(grepl('captcha', html))==TRUE){
+      error <- 'Captcha error - Google has detected unusual activity and has requested a captcha intervention - please visit Google Scholar in your browser and try again'
+    } else {
+      error <- NA
+    }
+
     if(error == FALSE){
       error <- 'No further reults on this page'
     } else {
-      error <- 'Error 403 - you have been temporarily blocked by Google Scholar. Please wait 24 hours and try again'
+      error <- error
     }
     report_page <- error
   } else {

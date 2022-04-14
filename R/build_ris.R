@@ -82,7 +82,7 @@ build_ris <- function(data,
     if (is.null(path) == TRUE){
       location <- 'your working directory'
     } else {
-      location <- paste0(path)
+      location <- path
     }
     report <- paste0('The output file "', filename, '.ris" has been saved to ', location)
     message(report)

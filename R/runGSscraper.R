@@ -4,7 +4,12 @@
 #' function. Calls the latest version of the app from GitHub without
 #' the need to install GSscraper.
 #' @importFrom shiny runGitHub
+#' @return Runs the GitHub version of the Shiny App locally.
 #' @export
+#' @examples
+#' \dontrun{
+#' runGSscraper()
+#' }
 runGSscraper <- function(){
   shiny::runGitHub("GSscraper",
                    "nealhaddaway",

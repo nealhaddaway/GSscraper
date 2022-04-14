@@ -1,6 +1,6 @@
 #' Download one results page as html file
 #'
-#' @description Downloads one page of search results from a URLs as html files with
+#' @description Downloads one page of Google Scholar search results from a URLs as html files with
 #' a specific wait-time to avoid IP address blocking.
 #' @param url One URLs corresponding to a page of search results.
 #' @param pause Integer specifying the number of seconds to wait between download attempts. The
@@ -11,11 +11,11 @@
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @examples
+#' \dontrun{
 #' url <- 'https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=testing&btnG='
 #' html <- save_html(url, pause = 3, backoff = FALSE)
-#' @return An HTML file is downloaded with a file name corresponding to the URL with punctuation removed
-#' for clarity. Files are saved to the working directory. A pause notification is printed to the
-#' console.
+#' }
+#' @return An HTML file is downloaded as a string object Pause and success messages are printed to the console.
 #' @export
 save_html <- function(url,
                       pause = 0.5,
@@ -65,12 +65,12 @@ save_html <- function(url,
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
 #' @examples
+#' \dontrun{
 #' urls <- c('https://www.google.com/search?q=site:www.sei.org+climate&start=0',
-#'    'https://www.google.com/search?q=site:www.sei.org+climate&start=10')
+#'           'https://www.google.com/search?q=site:www.sei.org+climate&start=10')
 #' htmls <- save_htmls(urls, pause = 5)
-#' @return Files are downloaded with a file name corresponding to the URL with punctuation removed
-#' for clarity. Files are saved to the working directory. A pause notification is printed to the
-#' console.
+#' }
+#' @return HTML files are downloaded as a string object Pause and success messages are printed to the console.
 #' @export
 save_htmls <- function(urls,
                        pause = 0.5,

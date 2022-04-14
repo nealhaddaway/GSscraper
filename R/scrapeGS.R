@@ -1,74 +1,66 @@
 #' Scrape all Google Scholar information
 #'
-#' @description A wrapper for the scraping functions to produce a dataframe of citations for
+#' @description A wrapper for the scraping functions to produce a data frame of citations for
 #' each page of Google Scholar search results.
-#' @return A dataframe containing all extractable information from all html files in the working
-#' directory.
-#' @importFrom magrittr "%>%"
+#' @param html An HTML file read in as a single character string using `save_htmls()`.
+#' @importFrom mgsub mgsub
+#' @importFrom textclean replace_non_ascii
+#' @importFrom stringr str_extract_all
+#' @importFrom stringr str_extract
+#' @return A data frame containing all information that can be extracted from all html files
+#' in the working directory.
 #' @examples
-#' info <- get_info();
+#' \dontrun{
+#' info <- get_info(html)
+#' }
 #'@export
-get_info <- function(){
-  codes <- get_htmls_code()
-  code_lines <- mapply(split_by_div, codes)
-  titles <- as.data.frame(mapply(get_titles, code_lines)) %>%
-    utils::stack()
-  names(titles) <- c('title', 'sourcefile')
-  citations <- as.data.frame(mapply(get_citations, code_lines)) %>%
-    utils::stack()
-  names(citations) <- c('citations', 'sourcefile')
-  authors <- as.data.frame(mapply(get_authors, code_lines)) %>%
-    utils::stack()
-  names(authors) <- c('authors', 'sourcefile')
-  descriptions <- as.data.frame(mapply(get_descriptions, code_lines)) %>%
-    utils::stack()
-  names(descriptions) <- c('descriptions', 'sourcefile')
-  year <- as.data.frame(mapply(get_years, code_lines))
+get_info <- function(html){
+  code_lines <- split_by_div(html)
+  titles <- get_titles(code_lines)
+  citations <- get_citations(code_lines)
+  authors <- get_authors(code_lines)
+  descriptions <- get_descriptions(code_lines)
+  year <- get_years(code_lines)
   year[year == 'character(0)'] <- NA
-  year <- utils::stack(year)
-  names(year) <- c('year', 'sourcefile')
-  links <- as.data.frame(mapply(get_links, code_lines)) %>%
-    utils::stack()
-  names(links) <- c('links', 'sourcefile')
-  dois <- links2dois(links[,1])
-  names(dois) <- 'dois'
-  df <- data.frame(titles[,2], titles[,1], citations[,1], authors[,1], descriptions[,1], year[,1], links[,1], dois)
-  colnames(df) <- c('sourcefile', 'TI', 'citation', 'AU', 'AB', 'PY', 'UR', 'DO')
-  df <- tibble::as_tibble(df)
-  return(df)
-}
+  links <- get_links(code_lines)
+  dois <- links2dois(code_lines)
+  df <- data.frame(titles = titles[,1],
+                   citations = citations[,1],
+                   authors = authors[,1],
+                   descriptions = descriptions[,1],
+                   year = year[,1],
+                   links = links[,1],
+                   dois = dois[,1])
 
+  #extract number of results
+  n_results <- code_lines[grep('gs_ab_mdw', code_lines)]
+  n_results <- n_results[grep('results', n_results)]
+  n_results <-  gsub('.', ',', stringr::str_extract_all(tolower(n_results), "(?<=about ).+(?= results ())" )[[1]])
+  report_full <- paste0('Your search resulted in c. ', n_results, ' records')
 
-#' Scrape in code from local html file
-#'
-#'@description Scrape in code from an html file saved locally
-#'@param filename Name of the file to be scraped. File should be saved in the working
-#'directory.
-#'@return A string of html code for a webpage
-#'@examples
-#'code <- get_html_code(file.choose());
-#'@export
-get_html_code <- function(filename){
-  x <- xml2::read_html(filename)
-  x <- paste(x, collapse = '')
-  return(x)
-}
+  #if df is blank, check to see if error code in html
+  if(all(apply(df, 2, function(x) all(is.na(x)))) == TRUE){
+    if(any(grepl('Error 403', html))==TRUE){
+      error <- 'Error 403 - you have been temporarily blocked by Google Scholar. Please wait 24 hours and try again'
+    } else if (any(grepl('captcha', html))==TRUE){
+      error <- 'Captcha error - Google has detected unusual activity and has requested a captcha intervention - please visit Google Scholar in your browser and try again'
+    } else {
+      error <- NA
+    }
 
+    if(error == FALSE){
+      error <- 'No further reults on this page'
+    } else {
+      error <- error
+    }
+    report_page <- error
+  } else {
+    report_page <- paste0(nrow(df), ' results on this page')
+  }
 
-#' Scrape in code from multiple local html files
-#'
-#'@description Scrape in code from html files saved locally. Files should be saved in the working
-#'directory.
-#'@return One or more strings of html code for a webpage, stored as a list
-#'@examples
-#'html_codes <- get_htmls_code()
-#'file1 <- unlist(html_codes[1]);
-#'@export
-get_htmls_code <- function(){
-  filenames <- list.files(getwd())
-  filenames <- filenames[grep('.html', filenames)] #select only the HTML files in the working directory
-  x <- as.list(mapply(get_html_code, filenames))
-  return(x)
+  output <- list(df = df, report = list(full = report_full, page = report_page))
+
+  return(output)
 }
 
 
@@ -82,8 +74,8 @@ get_htmls_code <- function(){
 #' lines;
 #' @export
 split_by_div <- function(html) {
-  x <- unlist(strsplit(html, '\\<div class', useBytes = TRUE))
-  return(x)
+  code_lines <- unlist(strsplit(html, '\\<div class', useBytes = TRUE))
+  return(code_lines)
 }
 
 
@@ -91,20 +83,21 @@ split_by_div <- function(html) {
 #'
 #' @description Extract the titles of search results from Google Scholar search results, saved as
 #' html files.
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of result titles (10 per page)
 #' @examples
-#' titles <- get_titles(lines);
+#' titles <- get_titles(code_lines)
 #' @export
-get_titles <- function(html){
-  #Sys.setlocale('LC_ALL','C')
-  y <- grep("gs_ri", html) #find location of lines containing GS title tag 'gs_ri'
-  titles <- html[y] #extract lines
+get_titles <- function(code_lines){
+  y <- grep("gs_ri", code_lines) #find location of lines containing GS title tag 'gs_ri'
+  titles <- code_lines[y] #extract lines
   titles <- (gsub("<.*?>", "", titles))[2:11] #remove code inside '<>'
-  titles <- sub(" class=\"gs_ri\">", "", titles) #remove field codes
-  titles <- gsub('\n', '', titles) #remove line break codes
-  titles <- sub('.*] ', '', titles) #remove field codes
-  titles <- gsub('<', '', titles) #remove field codes
+  titles <- data.frame(titles)
+  titles$titles <- sub("=\"gs_ri\">", "", titles$titles) #remove field codes
+  titles$titles <- gsub('\n', '', titles$titles) #remove line break codes
+  titles$titles <- sub('.*] ', '', titles$titles) #remove field codes
+  titles$titles <- gsub('<', '', titles$titles) #remove field codes
+  titles$titles <- gsub('&#8230;', '…', titles$titles) #replace '&#8230' with ellipsis
   return(titles)
 }
 
@@ -113,20 +106,21 @@ get_titles <- function(html){
 #'
 #' @description Extract information relating to the record's citation (including the authors,
 #' journal/source and publication year), from Google Scholar search results.
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of citation information
 #' @examples
-#' citations <- get_citations(lines)
-#' citations;
+#' citations <- get_citations(code_lines)
 #' @export
-get_citations <- function(html){
-  y <- grep("gs_ri", html)
-  citations <- html[y+1]
+get_citations <- function(code_lines){
+  y <- grep("gs_ri", code_lines)
+  citations <- code_lines[y+1]
   citations <- (gsub("<.*?>", "", citations))[2:11]
-  citations <- sub(" class=\"gs_a\">", "", citations)
-  citations <- sub("</", "", citations)
-  citations <- gsub('\n', '', citations) #remove line break codes
-  citations <- mgsub::mgsub(citations, c('\302', '\240', '\342', '\200', '\246', '\303', '\241', '\305', '\201', '\242', '\223'), c('', '', '', '', '', '', '', '', '', '', ''))
+  citations <- data.frame(citations)
+  citations$citations <- sub("=\"gs_a\">", "", citations$citations)
+  citations$citations <- sub("<", "", citations$citations)
+  citations$citations <- gsub('\n', '', citations$citations) #remove line break codes
+  citations$citations <- mgsub::mgsub(citations$citations, c('\302', '\240', '\342', '\200', '\246', '\303', '\241', '\305', '\201', '\242', '\223'), c('', '', '', '', '', '', '', '', '', '', ''))
+  citations$citations <- gsub('&#8230;', '…', citations$citations) #replace '&#8230' with ellipsis
   return(citations)
 }
 
@@ -135,20 +129,19 @@ get_citations <- function(html){
 #'
 #' @description Extract author details from the record's citation from Google
 #' Scholar search results.
-#' @param html A vector of lines consisting of the html code for a web page
+#' @param code_lines A vector of lines consisting of the html code for a web page
 #' @return A vector of author lists
 #' @examples
-#' authors <- get_authors(lines)
+#' authors <- get_authors(code_lines)
 #' authors;
 #' @export
-get_authors <- function(html){
-  authors <- get_citations(html)
-  authors <- sub("\\-.*", "", authors)
-  authors <- strsplit(authors, ", ")
-  authors <- as.data.frame(mapply(paste, authors, collapse = '; '))
-  authors <- mapply(textclean::replace_non_ascii, authors)
-  authors <- as.data.frame(mapply(gsub, '\\.\\.\\.', '; et al.', authors))
-  names(authors) <- 'authors'
+get_authors <- function(code_lines){
+  authors <- get_citations(code_lines)
+  authors$citations <- sub("\\-.*", "", authors$citations)
+  authors$citations <- gsub('\\.\\.\\.', '; et al.', authors$citations)
+  authors$citations <- gsub('&#8230;', '…', authors$citations) #replace '&#8230' with ellipsis
+  authors$citations <- gsub(',', ';', authors$citations)
+  authors$citations <- textclean::replace_non_ascii(authors$citations)
   return(authors)
 }
 
@@ -157,20 +150,22 @@ get_authors <- function(html){
 #'
 #' @description Extract article descriptions (summaries of key sentences), from Google
 #' Scholar search results.
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of descriptions
 #' @examples
-#' descriptions <- get_descriptions(lines)
+#' descriptions <- get_descriptions(code_lines)
 #' descriptions;
 #' @export
-get_descriptions <- function(html){
-  y <- grep("gs_ri", html)
-  descriptions <- html[y+3]
+get_descriptions <- function(code_lines){
+  y <- grep("gs_ri", code_lines)
+  descriptions <- code_lines[y+2]
   descriptions <- (gsub("<.*?>", "", descriptions))[2:11]
-  descriptions <- sub(" class=\"gs_rs\">", "", descriptions)
-  descriptions <- sub("</", "", descriptions)
-  descriptions <- mgsub::mgsub(descriptions, c('\302', '\240', '\342', '\200', '\246', '\303', '\241', '\305', '\201', '\242', '\223'), c('', '', '', '', '', '', '', '', '', '', ''))
-  descriptions <- gsub('\n', '', descriptions) #remove line break codes
+  descriptions <- data.frame(descriptions)
+  descriptions$descriptions <- sub("=\"gs_rs\">", "", descriptions$descriptions)
+  descriptions$descriptions <- sub("<", "", descriptions$descriptions)
+  descriptions$descriptions <- mgsub::mgsub(descriptions$descriptions, c('\302', '\240', '\342', '\200', '\246', '\303', '\241', '\305', '\201', '\242', '\223'), c('', '', '', '', '', '', '', '', '', '', ''))
+  descriptions$descriptions <- gsub('\n', '', descriptions$descriptions) #remove line break codes
+  descriptions$descriptions <- gsub('&#8230;', '…', descriptions$descriptions) #replace '&#8230' with ellipsis
   return(descriptions)
 }
 
@@ -178,18 +173,18 @@ get_descriptions <- function(html){
 #' Extract article descriptions from Google Scholar results
 #'
 #' @description Extract article publication years from Google Scholar search results.
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of publication years
 #' @examples
 #' years <- get_years(lines)
 #' years;
 #' @export
-get_years <- function(html){
-  y <- get_citations(html)
-  year <- c()
-  for(i in y){
-    yr <- regmatches(i, gregexpr("\\b(19|20)\\d{2}\\b", i))
-    year <- c(year, yr)
+get_years <- function(code_lines){
+  y <- get_citations(code_lines)
+  year <- data.frame()
+  for(i in 1:length(y$citations)){
+    yr <- unlist(regmatches(y$citations[i], gregexpr("\\b(19|20)\\d{2}\\b", y$citations[i])))[1]
+    year <- rbind(year, yr)
   }
   return(year)
 }
@@ -199,42 +194,20 @@ get_years <- function(html){
 #'
 #' @description Extract links to websites holding article information from Google
 #' Scholar search results.
-#' @param html A vector of lines consisting of the html code for a webpage
+#' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of URLs
 #' @examples
-#' links <- get_links(lines)
+#' links <- get_links(code_lines)
 #' links;
 #' @export
-get_links <- function(html){
-  y <- grep("gs_ri", html)
-  links <- html[y]
+get_links <- function(code_lines){
+  y <- grep("gs_ri", code_lines)
+  links <- code_lines[y]
   links <- sub('.*href=', '', (links)[2:11])
-  links <- sub('\\ data.*', '', links)
-  links <- gsub('\"', '', links)
+  links <- data.frame(links)
+  links$links <- sub('\\ data.*', '', links$links)
+  links$links <- gsub('\"', '', links$links)
   return(links)
-}
-
-
-#' Extract a DOI from an article link
-#'
-#' @description Extract a digital object identifier ('DOI') from the link to the website
-#' holding article information, where they are contained within (e.g.
-#' 'https://link.springer.com/article/10.1186/1475-2875-13-446' contains the DOI
-#' 10.1186/1475-2875-13-446).
-#' @param link A vector of lines consisting of the html code for a webpage
-#' @return A doi
-#' @examples
-#' link <- 'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0189268'
-#' doi <- link2doi(link)
-#' doi;
-#' @export
-link2doi <- function(link){
-  if(grepl('10\\.', link) == TRUE){
-    x <- stringr::str_extract(link, '10.*')
-  } else {
-    x <- NA
-  }
-  return(x)
 }
 
 
@@ -244,13 +217,21 @@ link2doi <- function(link){
 #' holding article information, where they are contained within (e.g.
 #' 'https://link.springer.com/article/10.1186/1475-2875-13-446' contains the DOI
 #' 10.1186/1475-2875-13-446).
-#' @param links A vector of lines consisting of the html code for a webpage
-#' @return A vector of DOIs
+#' @param code_lines A data frame of links to a webpage from Google Scholar
+#' @return A dataframe of dois
 #' @examples
-#' dois <- links2dois(links)
-#' dois;
+#' dois <- links2dois(code_lines)
 #' @export
-links2dois <- function(links){
-  x <- as.data.frame(mapply(link2doi, links))
-  return(x)
+links2dois <- function(code_lines){
+  links <- get_links(code_lines)
+  dois <- data.frame()
+  for(i in 1:length(links$links)){
+    x <- stringr::str_extract(links$links[i], '10.*')
+    dois <- rbind(dois, x)
+  }
+  names(dois) <- 'doi'
+  dois$doi <- decode_dois(dois$doi)
+  dois$doi <- gsub('/html', '', dois$doi)
+  dois$doi <- gsub('/pdf', '', dois$doi)
+  return(dois)
 }

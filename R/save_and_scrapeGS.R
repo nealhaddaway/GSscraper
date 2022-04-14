@@ -28,26 +28,28 @@
 #' be performed on article titles only or anywhere in the record. The default is FALSE.
 #' @param authors The names of authors searched for.
 #' @param source The name of the source of the articles (e.g. academic journal).
-#' @param path The path in which the files should be saved. The default is to save in the working directory.
-#' @param pause Integer specifying the number of seconds to wait between download attempts. The
-#' default value is 4 seconds.
-#' @param backoff A logical argument (TRUE or FALSE) specifying whether responsive backing-off should be used.
-#' If set to TRUE, the time between calls is varied depending on how long the server takes to respond to the
-#' original request. The responsive back-off time is set to multiple the response time by the `pause` time: i.e.
-#' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
-#' be employed before the next call. The default for back-off is `FALSE`.
-#' @return A dataframe containing all extractable information from all html files in the working
-#' directory. A text file is saved to the working directory containing a report of the links generated and
-#' the input variables used.
-#' @importFrom magrittr "%>%"
+#' @param pause Integer specifying the number of seconds to wait between download attempts.
+#' The default value is 4 seconds.
+#' @param backoff A logical argument (TRUE or FALSE) specifying whether responsive backing-off
+#' should be used. If set to TRUE, the time between calls is varied depending on how long the
+#' server takes to respond to the original request. The responsive back-off time is set to
+#' multiple the response time by the `pause` time: i.e. if the system takes 1.02 seconds to
+#' respond and `pause` time is set to 4 seconds, a 4.10 second delay will be employed before
+#' the next call. The default for back-off is `FALSE`.
+#' @return A list containing: 1) (data) a data frame containing all information that can be
+#' extracted from all html files in the working directory; and, 2) (report) a report of the
+#' links generated and the input variables used.
 #' @examples
+#' \dontrun{
 #' and_terms <- c('river', 'aquatic')
 #' exact_phrase <- c('water chemistry')
 #' or_terms <- c('crayfish', 'fish')
 #' not_terms <- c('lobster', 'coral')
 #' year_from <- 1900
 #' year_to <- 2020
-#' info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 3);
+#' info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 3)
+#' info
+#' }
 #'@export
 save_and_scrapeGS <- function(and_terms = '',
                               exact_phrase = '',
@@ -63,7 +65,6 @@ save_and_scrapeGS <- function(and_terms = '',
                               titlesearch = FALSE,
                               authors = '',
                               source = '',
-                              path = '',
                               pause = 4,
                               backoff = FALSE){
   links <- buildGSlinks(and_terms = and_terms,
@@ -80,12 +81,16 @@ save_and_scrapeGS <- function(and_terms = '',
                         titlesearch = titlesearch,
                         authors = authors,
                         source = source)
-  save_htmls(urls = links,
-    path = path,
-    pause = pause,
-    backoff = backoff)
-  info <- get_info()
-
+  htmls <- save_htmls(urls = links,
+                      pause = pause,
+                      backoff = backoff)
+  df <- data.frame()
+  for(i in 1:length(htmls)){
+    info <- get_info(unlist(htmls[i]))
+    data <- info$df
+    df <- dplyr::bind_rows(df, data)
+  }
+  data <- df
   report <- paste('File generated: ',
                   paste('Search date, time, timezone: ',
                         Sys.time(),
@@ -208,35 +213,8 @@ save_and_scrapeGS <- function(and_terms = '',
                   '\n',
                   sep = '\n')
 
-  cat(report, file = 'searchreport.txt')
+  output <- list(data = data,
+                 report = report)
 
-  return(info)
-}
-
-
-#' Global wrapper for CrossRef lookup based on scraped Google Scholar results
-#'
-#' @description Function wraps doi and title lookups for scraped results from Google
-#' Scholar results pages.
-#' @param data dataframe output object from `save_and_scrapeGS()`, containing digital
-#' object identifiers (DOIs; column DO) and article titles (column TI).
-#' @examples
-#' crossref_results <- crossref_lookup(info)
-#' head(crossref_results);
-#' @return A list of (lists of) CrossRef citations for all retrieved records.
-crossref_lookup <- function(data){
-  dois <- stats::na.omit(data$DO)
-  titles <- dplyr::filter(data, is.na(data$DO) == TRUE)$TI
-  doi_query <- rcrossref::cr_works(dois = dois)
-
-  search_title <- function(x) {
-    result <- rcrossref::cr_works(flq = c(query.bibliographic = x))
-    result <- result$data[1,]
-    return(result)
-  }
-
-  title_query <- mapply(search_title, titles)
-
-  return(c(doi_query, title_query))
-
+  return(output)
 }

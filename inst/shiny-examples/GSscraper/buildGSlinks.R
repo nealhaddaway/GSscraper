@@ -47,8 +47,8 @@
 #'     authors = 'haddaway',
 #'     source = 'freshwater')
 #' link;
-#' @return A link containing the specified search results. A text file is saved to the working
-#' directory containing a report of the links generated and the input variables used.
+#' @return A list containing: 1) ($link) links to the specified search results; and, 2) ($report)
+#' a text string containing a report of the links generated and the input variables used.
 #' @export
 
 buildGSlinks <- function(and_terms = '',
