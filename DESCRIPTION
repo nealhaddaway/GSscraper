@@ -1,7 +1,7 @@
 Package: GSscraper
 Type: Package
 Title: Scrapes Citation Information From Google Scholar Results
-Version: 0.1.0
+Version: 0.0.1
 Author: 
     person(given = "Neal",
                family = "Haddaway",
@@ -17,13 +17,19 @@ Description: Generate URLs for pages of search results from Google Scholar
     these URLs, and then locally scrape citation information from within them. 
 License: GPL-3
 Imports: 
+    cfhttr,
     devtools,
     dplyr,
-    listviewer,
     magrittr,
     mgsub,
+    purrr,
     rcrossref,
+    RCurl,
+    shiny,
+    shinyjs,
+    shinyWidgets,
     stats,
+    stringi,
     stringr,
     textclean,
     tibble,
@@ -36,4 +42,4 @@ Suggests:
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

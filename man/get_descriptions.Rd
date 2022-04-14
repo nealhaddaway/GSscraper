@@ -4,10 +4,10 @@
 \alias{get_descriptions}
 \title{Extract article descriptions from Google Scholar results}
 \usage{
-get_descriptions(html)
+get_descriptions(code_lines)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{code_lines}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A vector of descriptions
@@ -17,6 +17,8 @@ Extract article descriptions (summaries of key sentences), from Google
 Scholar search results.
 }
 \examples{
-descriptions <- get_descriptions(lines)
-descriptions;
+\dontrun{
+descriptions <- get_descriptions(code_lines)
+descriptions
+}
 }

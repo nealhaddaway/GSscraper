@@ -10,6 +10,7 @@
 #' original request. The responsive back-off time is set to multiple the response time by the `pause` time: i.e.
 #' if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
 #' be employed before the next call. The default for back-off is `FALSE`.
+#' @importFrom stats runif
 #' @examples
 #' \dontrun{
 #' url <- 'https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=testing&btnG='
@@ -22,7 +23,7 @@ save_html <- function(url,
                       backoff = FALSE){
   t0 <- Sys.time()
 
-  pause <- pause * runif(1, 0.5, 1.5)
+  pause <- pause * stats::runif(1, 0.5, 1.5)
 
   #initiate scrape and detect redirect
   message('Saving next page of search results...\n')

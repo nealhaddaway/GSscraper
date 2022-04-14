@@ -3,10 +3,7 @@
 #' @description A wrapper for the scraping functions to produce a data frame of citations for
 #' each page of Google Scholar search results.
 #' @param html An HTML file read in as a single character string using 'save_htmls()'.
-#' @importFrom mgsub mgsub
-#' @importFrom textclean replace_non_ascii
 #' @importFrom stringr str_extract_all
-#' @importFrom stringr str_extract
 #' @return A data frame containing all information that can be extracted from all html files
 #' in the working directory.
 #' @examples
@@ -70,8 +67,10 @@ get_info <- function(html){
 #' @param html A string consisting of the html code for a webpage
 #' @return A vector of strings, one for each separated line
 #' @examples
+#' \dontrun{
 #' lines <- split_by_div(code)
-#' lines;
+#' lines
+#' }
 #' @export
 split_by_div <- function(html) {
   code_lines <- unlist(strsplit(html, '\\<div class', useBytes = TRUE))
@@ -86,7 +85,9 @@ split_by_div <- function(html) {
 #' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of result titles (10 per page)
 #' @examples
+#' \dontrun{
 #' titles <- get_titles(code_lines)
+#' }
 #' @export
 get_titles <- function(code_lines){
   y <- grep("gs_ri", code_lines) #find location of lines containing GS title tag 'gs_ri'
@@ -108,8 +109,11 @@ get_titles <- function(code_lines){
 #' journal/source and publication year), from Google Scholar search results.
 #' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of citation information
+#' @importFrom mgsub mgsub
 #' @examples
+#' \dontrun{
 #' citations <- get_citations(code_lines)
+#' }
 #' @export
 get_citations <- function(code_lines){
   y <- grep("gs_ri", code_lines)
@@ -131,9 +135,12 @@ get_citations <- function(code_lines){
 #' Scholar search results.
 #' @param code_lines A vector of lines consisting of the html code for a web page
 #' @return A vector of author lists
+#' @importFrom textclean replace_non_ascii
 #' @examples
+#' \dontrun{
 #' authors <- get_authors(code_lines)
-#' authors;
+#' authors
+#' }
 #' @export
 get_authors <- function(code_lines){
   authors <- get_citations(code_lines)
@@ -152,9 +159,12 @@ get_authors <- function(code_lines){
 #' Scholar search results.
 #' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of descriptions
+#' @importFrom mgsub mgsub
 #' @examples
+#' \dontrun{
 #' descriptions <- get_descriptions(code_lines)
-#' descriptions;
+#' descriptions
+#' }
 #' @export
 get_descriptions <- function(code_lines){
   y <- grep("gs_ri", code_lines)
@@ -176,8 +186,10 @@ get_descriptions <- function(code_lines){
 #' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of publication years
 #' @examples
+#' \dontrun{
 #' years <- get_years(lines)
-#' years;
+#' years
+#' }
 #' @export
 get_years <- function(code_lines){
   y <- get_citations(code_lines)
@@ -197,8 +209,10 @@ get_years <- function(code_lines){
 #' @param code_lines A vector of lines consisting of the html code for a webpage
 #' @return A vector of URLs
 #' @examples
+#' \dontrun{
 #' links <- get_links(code_lines)
-#' links;
+#' links
+#' }
 #' @export
 get_links <- function(code_lines){
   y <- grep("gs_ri", code_lines)
@@ -218,9 +232,12 @@ get_links <- function(code_lines){
 #' 'https://link.springer.com/article/10.1186/1475-2875-13-446' contains the DOI
 #' 10.1186/1475-2875-13-446).
 #' @param code_lines A data frame of links to a webpage from Google Scholar
-#' @return A dataframe of dois
+#' @return A data frame of dois
+#' @importFrom stringr str_extract
 #' @examples
+#' \dontrun{
 #' dois <- links2dois(code_lines)
+#' }
 #' @export
 links2dois <- function(code_lines){
   links <- get_links(code_lines)

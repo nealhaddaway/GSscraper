@@ -4,10 +4,10 @@
 \alias{get_citations}
 \title{Extract citation information from Google Scholar results}
 \usage{
-get_citations(html)
+get_citations(code_lines)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{code_lines}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A vector of citation information
@@ -17,6 +17,7 @@ Extract information relating to the record's citation (including the authors,
 journal/source and publication year), from Google Scholar search results.
 }
 \examples{
-citations <- get_citations(lines)
-citations;
+\dontrun{
+citations <- get_citations(code_lines)
+}
 }

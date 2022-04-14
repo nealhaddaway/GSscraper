@@ -4,10 +4,10 @@
 \alias{get_links}
 \title{Extract article links from Google Scholar results}
 \usage{
-get_links(html)
+get_links(code_lines)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{code_lines}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A vector of URLs
@@ -17,6 +17,8 @@ Extract links to websites holding article information from Google
 Scholar search results.
 }
 \examples{
-links <- get_links(lines)
-links;
+\dontrun{
+links <- get_links(code_lines)
+links
+}
 }

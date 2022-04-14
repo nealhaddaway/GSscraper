@@ -179,15 +179,6 @@ save_and_scrapeGS <- function(and_terms = '',
                   paste('Source:',
                         source,
                         sep = ' '),
-                  if(path == ''){
-                    paste('Files saved to working directory: ',
-                          getwd(),
-                          sep = '')
-                    } else {
-                      paste('Files saved to: ',
-                            path,
-                            sep = ' ')
-                      },
                   if(pause == ''){
                     'Paused 4 seconds between calls.'
                   } else {

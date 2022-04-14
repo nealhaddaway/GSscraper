@@ -4,12 +4,10 @@
 \alias{save_htmls}
 \title{Download multiple results pages as html files}
 \usage{
-save_htmls(urls, path = "", pause = 4, backoff = FALSE)
+save_htmls(urls, pause = 0.5, backoff = FALSE)
 }
 \arguments{
 \item{urls}{One or more URLs corresponding to pages of Google Scholar search results.}
-
-\item{path}{The path in which the files should be saved. The default is to save in the working directory.}
 
 \item{pause}{Integer specifying the number of seconds to wait between download attempts. The
 default value is 4 seconds.}
@@ -21,16 +19,16 @@ if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds
 be employed before the next call. The default for back-off is `FALSE`.}
 }
 \value{
-Files are downloaded with a file name corresponding to the URL with punctuation removed
-for clarity. Files are saved to the working directory. A pause notification is printed to the
-console.
+HTML files are downloaded as a string object Pause and success messages are printed to the console.
 }
 \description{
 Downloads one or more Google Scholar URLs as html files with a specific wait-time
 to avoid IP address blocking.
 }
 \examples{
-urls <- c('https://scholar.google.co.uk/scholar?start=50&q=insect+population+\%22systematic+review\%22&hl=en&as_vis=0,5&as_sdt=0,5',
-   'https://scholar.google.co.uk/scholar?start=90&q=insect+population+\%22systematic+review\%22&hl=en&as_vis=0,5&as_sdt=0,5')
-save_htmls(urls, pause = 5);
+\dontrun{
+urls <- c('https://www.google.com/search?q=site:www.sei.org+climate&start=0',
+          'https://www.google.com/search?q=site:www.sei.org+climate&start=10')
+htmls <- save_htmls(urls, pause = 5)
+}
 }

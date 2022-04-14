@@ -4,10 +4,10 @@
 \alias{get_authors}
 \title{Extract authors from Google Scholar results}
 \usage{
-get_authors(html)
+get_authors(code_lines)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a web page}
+\item{code_lines}{A vector of lines consisting of the html code for a web page}
 }
 \value{
 A vector of author lists
@@ -17,6 +17,8 @@ Extract author details from the record's citation from Google
 Scholar search results.
 }
 \examples{
-authors <- get_authors(lines)
-authors;
+\dontrun{
+authors <- get_authors(code_lines)
+authors
+}
 }

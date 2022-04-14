@@ -4,10 +4,10 @@
 \alias{get_years}
 \title{Extract article descriptions from Google Scholar results}
 \usage{
-get_years(html)
+get_years(code_lines)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{code_lines}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A vector of publication years
@@ -16,6 +16,8 @@ A vector of publication years
 Extract article publication years from Google Scholar search results.
 }
 \examples{
+\dontrun{
 years <- get_years(lines)
-years;
+years
+}
 }

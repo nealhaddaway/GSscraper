@@ -4,10 +4,10 @@
 \alias{get_titles}
 \title{Extract titles from Google Scholar results}
 \usage{
-get_titles(html)
+get_titles(code_lines)
 }
 \arguments{
-\item{html}{A vector of lines consisting of the html code for a webpage}
+\item{code_lines}{A vector of lines consisting of the html code for a webpage}
 }
 \value{
 A vector of result titles (10 per page)
@@ -17,5 +17,7 @@ Extract the titles of search results from Google Scholar search results, saved a
 html files.
 }
 \examples{
-titles <- get_titles(lines);
+\dontrun{
+titles <- get_titles(code_lines)
+}
 }

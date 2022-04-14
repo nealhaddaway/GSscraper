@@ -1,5 +1,5 @@
 File generated: 
-Search date, time, timezone: 2020-10-15 15:21:32 (Europe/Berlin)
+Search date, time, timezone: 2022-04-14 16:37:39 (Europe/London)
 
 
 Search parameters:
@@ -9,7 +9,7 @@ This exact word or phrase: "water chemistry"
 Any these words: crayfish; fish
 Language: en
 Between these years:  and 
-Number of pages exported: 10
+Number of pages exported: 100
 Starting from page: 1
 Citations included: TRUE
 Citations included: TRUE
@@ -29,4 +29,94 @@ https://scholar.google.co.uk/scholar?start=60&q=river+aquatic+crayfish+OR+fish+%
 https://scholar.google.co.uk/scholar?start=70&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
 https://scholar.google.co.uk/scholar?start=80&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
 https://scholar.google.co.uk/scholar?start=90&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=100&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=110&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=120&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=130&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=140&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=150&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=160&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=170&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=180&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=190&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=200&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=210&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=220&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=230&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=240&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=250&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=260&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=270&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=280&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=290&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=300&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=310&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=320&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=330&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=340&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=350&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=360&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=370&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=380&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=390&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=400&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=410&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=420&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=430&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=440&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=450&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=460&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=470&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=480&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=490&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=500&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=510&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=520&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=530&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=540&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=550&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=560&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=570&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=580&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=590&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=600&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=610&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=620&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=630&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=640&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=650&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=660&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=670&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=680&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=690&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=700&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=710&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=720&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=730&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=740&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=750&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=760&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=770&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=780&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=790&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=800&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=810&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=820&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=830&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=840&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=850&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=860&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=870&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=880&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=890&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=900&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=910&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=920&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=930&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=940&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=950&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=960&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=970&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=980&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
+https://scholar.google.co.uk/scholar?start=990&q=river+aquatic+crayfish+OR+fish+%22water+chemistry%22+-lobster+-coral&hl=en&as_vis=0,5&as_sdt=0,5
 

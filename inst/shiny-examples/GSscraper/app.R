@@ -1,8 +1,5 @@
 library(shiny)
-library(magrittr)
-library(zip)
 library(RCurl)
-library(shinybusy)
 library(cfhttr)
 library(purrr)
 library(dplyr)
@@ -11,6 +8,7 @@ library(shinyWidgets)
 library(textclean)
 library(stringi)
 library(mgsub)
+library(magrittr)
 
 source('buildGSlinks.R')
 source('save_htmls.R')
@@ -27,7 +25,6 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      h2('GSscraper'),
                                      br(),
                                      'Welcome to GSscraper, a web-based tool for extracting search results from Google Scholar.',
-                                     #shinybusy::add_busy_spinner(spin = "fading-circle", color = "#bababa", margins = c(70, 20))
                                      br(),
                                      br(),
                                      'You can use this tool to perform structured searches of Google Scholar.',

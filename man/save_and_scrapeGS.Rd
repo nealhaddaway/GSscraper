@@ -19,7 +19,6 @@ save_and_scrapeGS(
   titlesearch = FALSE,
   authors = "",
   source = "",
-  path = "",
   pause = 4,
   backoff = FALSE
 )
@@ -66,31 +65,33 @@ be performed on article titles only or anywhere in the record. The default is FA
 
 \item{source}{The name of the source of the articles (e.g. academic journal).}
 
-\item{path}{The path in which the files should be saved. The default is to save in the working directory.}
+\item{pause}{Integer specifying the number of seconds to wait between download attempts.
+The default value is 4 seconds.}
 
-\item{pause}{Integer specifying the number of seconds to wait between download attempts. The
-default value is 4 seconds.}
-
-\item{backoff}{A logical argument (TRUE or FALSE) specifying whether responsive backing-off should be used.
-If set to TRUE, the time between calls is varied depending on how long the server takes to respond to the
-original request. The responsive back-off time is set to multiple the response time by the `pause` time: i.e.
-if the system takes 1.02 seconds to respond and `pause` time is set to 4 seconds, a 4.10 second delay will
-be employed before the next call. The default for back-off is `FALSE`.}
+\item{backoff}{A logical argument (TRUE or FALSE) specifying whether responsive backing-off
+should be used. If set to TRUE, the time between calls is varied depending on how long the
+server takes to respond to the original request. The responsive back-off time is set to
+multiple the response time by the `pause` time: i.e. if the system takes 1.02 seconds to
+respond and `pause` time is set to 4 seconds, a 4.10 second delay will be employed before
+the next call. The default for back-off is `FALSE`.}
 }
 \value{
-A dataframe containing all extractable information from all html files in the working
-directory. A text file is saved to the working directory containing a report of the links generated and
-the input variables used.
+A list containing: 1) (data) a data frame containing all information that can be
+extracted from all html files in the working directory; and, 2) (report) a report of the
+links generated and the input variables used.
 }
 \description{
 Function wraps the `buildGSlinks()`, `save_htmls()`, and scrape functions.
 }
 \examples{
+\dontrun{
 and_terms <- c('river', 'aquatic')
 exact_phrase <- c('water chemistry')
 or_terms <- c('crayfish', 'fish')
 not_terms <- c('lobster', 'coral')
 year_from <- 1900
 year_to <- 2020
-info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 3);
+info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 3)
+info
+}
 }

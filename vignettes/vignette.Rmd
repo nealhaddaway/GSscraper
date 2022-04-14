@@ -107,7 +107,12 @@ By default, this function downloads the files to the working directory unless ot
 
 ```{r, eval = FALSE}
 try_links <- links[1:5]
-save_htmls(urls = try_links, pause = 5)
+htmls <- save_htmls(urls = try_links, pause = 5)
+cat(substr(htmls[1], 1, 1000))
+```
+``` {r, echo = FALSE}
+htmls <- list(paste(xml2::read_html(x = "page_2.html"), collapse = '\n'), 'test')
+cat(substr(htmls[1], 1, 1000))
 ```
 
 
@@ -115,10 +120,10 @@ save_htmls(urls = try_links, pause = 5)
 
 Now we have our results downloaded, we can scrape them locally for citation information.
 
-The `get_info()` function loads in all HTML files in the working directory and scrapes the following data for each record from the HTML(s) (codes in brackets correspond to the .ris file equivalent field codes):
+The `get_info()` function  scrapes the following data for each record from the HTML(s) (codes in brackets correspond to the .ris file equivalent field codes):
 
 * The article `title` (TI)
-* The provided citation information (`citations`)
+* The provided citation information (`citation`)
 * The article `authors` (AU)
 * The provided short `description` (AB)
 * The publication `year` (PY)
@@ -128,47 +133,38 @@ The `get_info()` function loads in all HTML files in the working directory and s
 This returns a tibble as follows:
 
 ```{r, eval = FALSE}
-get_info()
+data <- get_info(htmls)
+data[[1]]
 ```
 ```{r, echo = FALSE}
 info <- tibble::as_tibble(readRDS('info.rds'))
 info
 ```
 
-We can then use the DOIs that were pulled from the Google Scholar links to query CrossRef to obtain full citation data using the `rcrossref` package as follows:
-
-```{r, warning = FALSE}
-library('rcrossref')
-refs <- cr_works(dois = info$DO)
-refs <- refs$data
-listviewer::jsonedit(refs, mode = "view", width = '100%', height = '500px')
-```
-
-Finally, we can also search CrossRef for the records lacking DOIs based on title matching, as follows:
-
-```{r}
-no_doi <- dplyr::filter(info, is.na(DO) == TRUE)
-query_titles <- no_doi$TI
-search_title <- function(x) {
-  result <- cr_works(flq = c(query.bibliographic = x))
-  result <- result$data[1,]
-  return(result)
-}
-results <- mapply(search_title, query_titles)
-listviewer::jsonedit(results, mode = "view", width = '100%', height = '500px')
-```
-
-
 ## Wrapper function
 
 All of the stages above can be performed together by making use of the global wrapper function `save_and_scrapeGS()` as follows:
 
-```{r}
+```{r, eval = FALSE}
 and_terms <- c('river', 'aquatic')
 exact_phrase <- c('water chemistry')
 or_terms <- c('crayfish', 'fish')
 not_terms <- c('lobster', 'coral')
 year_from <- 1900
 year_to <- 2020
-info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 10)
+info <- save_and_scrapeGS(and_terms, exact_phrase, or_terms, not_terms, pages = 1)
+info
 ```
+```{r, echo = FALSE}
+info <- tibble::as_tibble(readRDS('info.rds'))
+info
+```
+
+## Write results to an RIS file
+
+Finally, we can export our Google Scholar search results as an RIS file so we can combine it with our other bibliographies using the `build_ris()` function, which will save our file to the working directory (if `SAVE = TRUE`), otherwise you can write the RIS file yourself from the R text object `ris`:
+
+``` {r, eval = FALSE}
+ris <- build_ris(data, save = TRUE)
+```
+

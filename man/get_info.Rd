@@ -4,16 +4,21 @@
 \alias{get_info}
 \title{Scrape all Google Scholar information}
 \usage{
-get_info()
+get_info(html)
+}
+\arguments{
+\item{html}{An HTML file read in as a single character string using 'save_htmls()'.}
 }
 \value{
-A dataframe containing all extractable information from all html files in the working
-directory.
+A data frame containing all information that can be extracted from all html files
+in the working directory.
 }
 \description{
-A wrapper for the scraping functions to produce a dataframe of citations for
+A wrapper for the scraping functions to produce a data frame of citations for
 each page of Google Scholar search results.
 }
 \examples{
-info <- get_info();
+\dontrun{
+info <- get_info(html)
+}
 }

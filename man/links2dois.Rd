@@ -4,13 +4,13 @@
 \alias{links2dois}
 \title{Extract DOIs from multiple article links}
 \usage{
-links2dois(links)
+links2dois(code_lines)
 }
 \arguments{
-\item{links}{A vector of lines consisting of the html code for a webpage}
+\item{code_lines}{A data frame of links to a webpage from Google Scholar}
 }
 \value{
-A vector of DOIs
+A data frame of dois
 }
 \description{
 Extract digital object identifiers ('DOIs') from  links to the websites
@@ -19,6 +19,7 @@ holding article information, where they are contained within (e.g.
 10.1186/1475-2875-13-446).
 }
 \examples{
-dois <- links2dois(links)
-dois;
+\dontrun{
+dois <- links2dois(code_lines)
+}
 }

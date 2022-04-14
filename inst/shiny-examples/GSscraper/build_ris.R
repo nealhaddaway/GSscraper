@@ -4,7 +4,7 @@
 #' fields corresponding to a minimum information for
 #' de-duplication and record identification from external
 #' API sources (e.g. CrossRef).
-#' @param input A data frame object containing bibliographic
+#' @param data A data frame object containing bibliographic
 #' data. Each item is an independent line in the
 #' data frame. The data frame must contain
 #' columns named as follows: 'authors', 'year', 'titles',
@@ -18,6 +18,7 @@
 #' @return An RIS formatted text file saved to the desired
 #' path.
 #' @export
+#' @importFrom utils write.table
 #' @examples
 #' \dontrun{
 #' data <- read.csv('inst/extdata/data.csv')
@@ -78,7 +79,7 @@ build_ris <- function(data,
 
   #generate report if file exported as .ris
   if (save == TRUE){
-    write.table(ris, file = paste0(path, filename, '.ris'), row.names = FALSE, col.names = FALSE)
+    utils::write.table(ris, file = paste0(path, filename, '.ris'), row.names = FALSE, col.names = FALSE)
     if (is.null(path) == TRUE){
       location <- 'your working directory'
     } else {

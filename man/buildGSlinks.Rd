@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildGSlinks.R
 \name{buildGSlinks}
 \alias{buildGSlinks}
-\title{Build GS link}
+\title{Build GS links}
 \usage{
 buildGSlinks(
   and_terms = "",
@@ -64,17 +64,18 @@ be performed on article titles only or anywhere in the record. The default is FA
 \item{source}{The name of the source of the articles (e.g. academic journal).}
 }
 \value{
-A link containing the specified search results. A text file is saved to the working
-directory containing a report of the links generated and the input variables used.
+A list containing: 1) ($link) links to the specified search results; and, 2) ($report)
+a text string containing a report of the links generated and the input variables used.
 }
 \description{
 Constructs series of Google Scholar search page URLs
 }
 \details{
 Function takes as input a partial Boolean search string and produces a functioning (set of)
-URLs; one for each page og search results on Google Scholar.
+URLs; one for each page of search results on Google Scholar.
 }
 \examples{
+\dontrun{
 and_terms <- c('river', 'aquatic')
 exact_phrase <- c('water chemistry')
 or_terms <- c('crayfish', 'fish')
@@ -90,5 +91,6 @@ link <- buildGSlinks(and_terms = and_terms,
     pages = 1,
     authors = 'haddaway',
     source = 'freshwater')
-link;
+link
+}
 }

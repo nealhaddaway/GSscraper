@@ -16,6 +16,8 @@ A vector of strings, one for each separated line
 Split the imported html code into lines based on the '<div' field code.
 }
 \examples{
+\dontrun{
 lines <- split_by_div(code)
-lines;
+lines
+}
 }
