@@ -264,7 +264,6 @@ server <- function(input, output) {
 
         withCallingHandlers({
             shinyjs::html("text", "")
-
             htmls <- list()
             for(i in 1:length(rv$links)){
                 html <- save_html((rv$links)[i], pause = 0.5, backoff = FALSE)
@@ -272,11 +271,9 @@ server <- function(input, output) {
             }
             rv$htmls <- htmls
             print(paste0(length(rv$htmls), ' files downloaded.'))
-
         },
         message = function(m) {
             shinyjs::html(id = "text", html = m$message, add = TRUE)})
-        #print(rv$htmls[[1]])
 
         output$save_report <- renderText({
             paste0(length(rv$htmls),' pages of results successfully downloaded. Proceed to the "Scrape data" tab to extract search results and download the final dataset.')
@@ -338,6 +335,7 @@ server <- function(input, output) {
                 title = "Publish on Zenodo",
                 'If you have finalised your search, you can post your search record and results on Zenodo to get a citable record with a Digital Object Identifier. Just enter your name, affiliation, ORCID and keywords below:',
                 br(),
+                uiOutput('warning'),
                 textInput('name', 'Your name'),
                 textInput('affiliation', 'Your affiliation'),
                 textInput('orcid', 'Your ORCID (if you have one)'),
@@ -350,88 +348,96 @@ server <- function(input, output) {
             })
 
         observeEvent(input$publish, {
-            zenodo <- zen4R::ZenodoManager$new(
-                token = '9NdaVzTEqKO86zyrvCbi7IFtRJ1lEFm02s5srtQyVF84HQ85sgoql25K6ku1',
-                logger = "INFO" # use "DEBUG" to see detailed API operation logs, use NULL if you don't want logs at all
-            )
+            if(identical(input$name, '') == TRUE){
+                output$warning <- renderUI({
+                    tagList(p('You must enter a name to post your record',
+                              style = "color:red;")
+                            )
+                })
+            } else {
+                zenodo <- zen4R::ZenodoManager$new(
+                    token = '9NdaVzTEqKO86zyrvCbi7IFtRJ1lEFm02s5srtQyVF84HQ85sgoql25K6ku1',
+                    logger = "INFO" # use "DEBUG" to see detailed API operation logs, use NULL if you don't want logs at all
+                )
 
-            # Create record
-            # Generate local empty record not yet deposited on Zenodo
-            # Get detailed help here: ?ZenodoRecord
-            myrec <- zenodo$createEmptyRecord()
-            myrec$setPublicationDate(as.Date(Sys.Date()))
-            myrec$setAccessRight("open")
-            myrec$setTitle(paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])))
-            myrec$setDescription(rv$links_report)
-            myrec$setUploadType("dataset")
-            if(is.null(input$affiliation) == FALSE && is.null(input$orcid) == TRUE){
-                myrec$addCreator(name = input$name,
-                                 affiliation = input$affiliation,
-                                 orcid = input$orcid)
-            }
-            if(is.null(input$affiliation) == TRUE && is.null(input$orcid) == TRUE){
-                myrec$addCreator(name = input$name)
-            }
-            if(is.null(input$affiliation) == FALSE && is.null(input$orcid) == TRUE){
-                myrec$addCreator(name = input$name,
-                                 affiliation = input$affiliation)
-            }
-            if(is.null(input$affiliation) == TRUE && is.null(input$orcid) == FALSE){
-                myrec$addCreator(name = input$name,
-                                 orcid = input$orcid)
-            }
-            if(is.null(input$keywords) == FALSE){
-                myrec$setKeywords(c(unlist(strsplit(input$keywords, ', '))))
-            }
-            # Deposit on zenodo
-            myrec <- zenodo$depositRecord(myrec)
-            # Get record id
-            myrec$id
-            # Upload file - get detailed help here: ??Zenodo
-            write.csv(rv$data, 'results.csv', row.names = FALSE)
-            zenodo$uploadFile('results.csv', myrec)
-            writeLines(rv$links_report, 'GSscraper search report.txt')
-            zenodo$uploadFile('GSscraper search report.txt', myrec)
-            # Find out doi from Zenodo
-            rv$doi <- myrec$metadata$prereserve_doi$doi
-            #build citation
-            rv$citation <- paste0(
-                input$name,
-                ' (', substr(Sys.Date(), 1, 4), ') ',
-                paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])),
-                '. Zenodo. https://doi.org/', rv$doi
-            )
-
-            rv$zenodo_ris <- paste0('\n',
-                                          'TY  - DATA', '\n',
-                                          'AU  - ', input$name, '\n',
-                                          'TI  - ', paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])), '\n',
-                                          'PY  - ', substr(Sys.Date(), 1, 4), '\n',
-                                          'AB  - ', rv$links_report, '\n',
-                                          'DO  - ', rv$doi, '\n',
-                                          'PB  - GSscraper and Zenodo', '\n',
-                                          'ER  - ')
-
-            output$zenodo_ris_download <- downloadHandler(
-                filename = function() {
-                    paste("search_record.ris", sep = "")
-                },
-                content = function(file) {
-                    write.csv(rv$zenodo_ris, file, row.names = FALSE)}
-            )
-
-            myrec <- zenodo$publishRecord(myrec$id)
-
-            output$citation <- renderUI({
-                if(is.na(rv$doi) == FALSE){
-                    tagList(
-                        br(),
-                        'Successfully published to Zenodo. Here is your citation:',
-                        br(),
-                        rv$citation
-                    )
+                # Create record
+                # Generate local empty record not yet deposited on Zenodo
+                # Get detailed help here: ?ZenodoRecord
+                myrec <- zenodo$createEmptyRecord()
+                myrec$setPublicationDate(as.Date(Sys.Date()))
+                myrec$setAccessRight("open")
+                myrec$setTitle(paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])))
+                myrec$setDescription(rv$links_report)
+                myrec$setUploadType("dataset")
+                if(identical(input$affiliation, '') == FALSE && identical(input$orcid, '') == TRUE){
+                    myrec$addCreator(name = input$name,
+                                     affiliation = input$affiliation,
+                                     orcid = input$orcid)
                 }
-            })
+                if(identical(input$affiliation, '') == TRUE && identical(input$orcid, '') == TRUE){
+                    myrec$addCreator(name = input$name)
+                }
+                if(identical(input$affiliation, '') == FALSE && identical(input$orcid, '') == TRUE){
+                    myrec$addCreator(name = input$name,
+                                     affiliation = input$affiliation)
+                }
+                if(identical(input$affiliation, '') == TRUE && identical(input$orcid, '') == FALSE){
+                    myrec$addCreator(name = input$name,
+                                     orcid = input$orcid)
+                }
+                if(identical(input$keywords, '') == FALSE){
+                    myrec$setKeywords(c(unlist(strsplit(input$keywords, ', '))))
+                }
+                # Deposit on zenodo
+                myrec <- zenodo$depositRecord(myrec)
+                # Get record id
+                myrec$id
+                # Upload file - get detailed help here: ??Zenodo
+                write.csv(rv$data, 'results.csv', row.names = FALSE)
+                zenodo$uploadFile('results.csv', myrec)
+                writeLines(rv$links_report, 'GSscraper search report.txt')
+                zenodo$uploadFile('GSscraper search report.txt', myrec)
+                # Find out doi from Zenodo
+                rv$doi <- myrec$metadata$prereserve_doi$doi
+                #build citation
+                rv$citation <- paste0(
+                    input$name,
+                    ' (', substr(Sys.Date(), 1, 4), ') ',
+                    paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])),
+                    '. Zenodo. https://doi.org/', rv$doi
+                )
+
+                rv$zenodo_ris <- paste0('\n',
+                                        'TY  - DATA', '\n',
+                                        'AU  - ', input$name, '\n',
+                                        'TI  - ', paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])), '\n',
+                                        'PY  - ', substr(Sys.Date(), 1, 4), '\n',
+                                        'AB  - ', rv$links_report, '\n',
+                                        'DO  - ', rv$doi, '\n',
+                                        'PB  - GSscraper and Zenodo', '\n',
+                                        'ER  - ')
+
+                output$zenodo_ris_download <- downloadHandler(
+                    filename = function() {
+                        paste("search_record.ris", sep = "")
+                    },
+                    content = function(file) {
+                        write.csv(rv$zenodo_ris, file, row.names = FALSE)}
+                )
+
+                myrec <- zenodo$publishRecord(myrec$id)
+
+                output$citation <- renderUI({
+                    if(is.na(rv$doi) == FALSE){
+                        tagList(
+                            br(),
+                            'Successfully published to Zenodo. Here is your citation:',
+                            br(),
+                            rv$citation
+                        )
+                    }
+                })
+            }
 
         })
 
@@ -470,9 +476,8 @@ server <- function(input, output) {
                     downloadButton('ris_download', 'Download results as RIS', icon = icon("file-download")),
                     br(),
                     br(),
-                    conditionalPanel(condition='input.post2Zenodo==null || input.post2Zenodo==""',
-                                     actionButton('post2Zenodo', 'Post search record and results to Zenodo')),
-                    conditionalPanel(condition='input.publish!=null && input.publish!=""',
+                    actionButton('post2Zenodo', 'Post search record and results to Zenodo'),
+                    conditionalPanel(condition='input.publish!=null && input.publish!=""', #tried to get this to only appear if the post is successful, but not sure how
                                      downloadButton('zenodo_ris_download', 'Save your Zenodo citation'))
                 )
             })
