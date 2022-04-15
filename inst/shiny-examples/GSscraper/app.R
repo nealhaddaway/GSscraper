@@ -420,7 +420,7 @@ server <- function(input, output) {
                     write.csv(rv$zenodo_ris, file, row.names = FALSE)}
             )
 
-            #myrec <- zenodo$publishRecord(myrec$id)
+            myrec <- zenodo$publishRecord(myrec$id)
 
             output$citation <- renderUI({
                 if(is.na(rv$doi) == FALSE){
