@@ -11,8 +11,6 @@ library(mgsub)
 library(magrittr)
 library(zen4R)
 library(shinyalert)
-library(shinybusy)
-library(strex)
 
 source('buildGSlinks.R')
 source('save_htmls.R')
@@ -37,7 +35,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      'The URLs of Google Scholar search results contain advanced search terms in a predictable and patterned manner, and we can use this pattern to design our own despoke search links:',
                                      br(),
                                      br(),
-                                     tags$img(src="buildGSlinks.png", width = 800),
+                                     tags$img(src="buildGSlinks.png", width = '100%'),
                                      br(),
                                      br(),
                                      hr(),
@@ -45,7 +43,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      'To get started, enter your search terms in the "Search" tab. Next, download the pages of search results in the "Save HTMLs" tab. Finally, scrape the downloaded files in the "Scrape data" tab. You can then download a CSV / RIS file containing your search results and publish your search history and results to Zenodo.',
                                      br(),
                                      br(),
-                                     tags$img(src="process.png", width = 800),
+                                     tags$img(src="process.png", width = '100%'),
                                      br(),
                                      br(),
                                      'Be aware that repetitive searching may result in a temporary block from Google Scholar (your table of search results may be blank or missing some data). Please use this tool responsibly.',
@@ -62,8 +60,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      'Please cite as: Haddaway, NR (2022) GSscraper: An R package and Shiny app for exporting search results from Google Scholar. Zenodo. ', tags$a(href="https://doi.org/10.5281/zenodo.6458134", "10.5281/zenodo.6458134")
                                      ),
                               column(2,
-                                     br(),tags$img(height = 150, src = "https://raw.githubusercontent.com/nealhaddaway/GSscraper/main/inst/shiny-examples/GSscraper/www/hex.png")),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                                     br(),tags$img(height = 150, src = "https://raw.githubusercontent.com/nealhaddaway/GSscraper/main/inst/shiny-examples/GSscraper/www/hex.png"))
                               )
                           ),
 
@@ -139,7 +136,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                                    tags$td(width = "60%", checkboxInput('incl_cit', NULL, value = TRUE))
                                                    ),
                                            tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'include ', strong('patents')),
+                                                   tags$td(width = "40%", 'include ', strong('pattents')),
                                                    tags$td(width = "60%", checkboxInput('incl_pat', NULL, value = TRUE))
                                                    )),
                                            br(),
@@ -152,8 +149,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                               column(12,
                                      br(),
                                      uiOutput('preview_text')
-                                     ),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                                     )
                           )
                  ),
 
@@ -163,10 +159,6 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      h2('Download your search results as HTML files'),
                                      br(),
                                      'Click the button below to save each page of search results for scraping in the next step.',
-                                     br(),
-                                     br(),
-                                     strong('Specify the delay in seconds between file saves'),' (this can reduce the chances of being blocked by Google Scholar)',br(),
-                                     numericInput('pause', NULL, value = 3, width = 75, step = 0.5),
                                      hr(),
                                      conditionalPanel(
                                          condition='input.google!=null && input.google!=""',
@@ -185,8 +177,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      br(),
                                      br(),
                                      textOutput('save_report')
-                                     ),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                                     )
                           )
                  ),
 
@@ -215,8 +206,7 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      br(),
                                      dataTableOutput('data'),
                                      br()
-                              ),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                              )
                           )
                  )
 )
@@ -266,10 +256,8 @@ server <- function(input, output) {
 
         #show preview of links
         output$preview <- renderTable({
-            table <- rv$links_tab
-            table$link <- paste0('<a href="', rv$links_tab$link, ' target="_blank">', rv$links_tab$link, '</a>')
-            table
-        }, sanitize.text.function = function(x) x)
+            rv$links_tab
+        })
 
         #render preview UI
         output$preview_text <- renderUI({
@@ -289,36 +277,12 @@ server <- function(input, output) {
         withCallingHandlers({
             shinyjs::html("text", "")
             htmls <- list()
-            message('Initialising...')
-            t0 <- Sys.time()
             for(i in 1:length(rv$links)){
-                message(paste0('Saving page ', i, '...'))
-                html <- save_html((rv$links)[i], pause = input$pause, backoff = FALSE)
-
-                #if last html contains a CAPTCHA, pause
-                if(grepl('CAPTCHA', html)  == TRUE){
-                    showModal(modalDialog(
-                        title = "You've been blocked ☹",
-                        'It looks like Google Scholar has temporarily blocked you. Please navigate to Google Scholar to solve the CAPTCHA.',
-                        br(),
-                        br(),
-                        'Pausing for 2 minutes...',
-                        easyClose = TRUE,
-                        footer = NULL
-                    ))
-                    rv$captcha <- TRUE
-                    Sys.sleep(120)
-                }
-
+                html <- save_html((rv$links)[i], pause = 0.5, backoff = FALSE)
                 htmls <- c(htmls, html)
-                message(paste0('Page ', i, ' saved.'))
             }
-            t1 <- Sys.time()
-            response_delay <- round(as.numeric(t1-t0), 3)
-            message(paste('Completed in',
-                          round(response_delay, 3),
-                          'seconds.'))
             rv$htmls <- htmls
+            print(paste0(length(rv$htmls), ' files downloaded.'))
         },
         message = function(m) {
             shinyjs::html(id = "text", html = m$message, add = TRUE)})
@@ -361,15 +325,8 @@ server <- function(input, output) {
         rv$data <- df
 
         output$data <- renderDataTable({
-            table <- rv$data
-            table[is.na(table)] <- ''
-            table$links <- paste0('<a href="', table$links, ' target="_blank">', table$links, '</a>')
-            table$ft_link_url <- paste0('<a href="', table$ft_link_url, ' target="_blank">', table$ft_link_url, '</a>')
-            names(table)[names(table) == 'ft_link_type'] <- 'type'
-            names(table)[names(table) == 'ft_link_source'] <- 'source'
-            names(table)[names(table) == 'ft_link_url'] <- 'full text link'
-            table
-        }, escape = FALSE)
+            rv$data
+        })
 
 
         output$scrape_report <- renderText({
@@ -396,16 +353,13 @@ server <- function(input, output) {
                 textInput('orcid', 'Your ORCID (if you have one)'),
                 textInput('keywords', 'Keywords for your search (comma separated)'),
                 actionButton('publish', 'Publish to Zenodo'),
-                uiOutput('saving_zenodo'),
                 uiOutput('citation'),
                 easyClose = TRUE,
                 footer = NULL
                 ))
             })
 
-        #if publish button is pushed
         observeEvent(input$publish, {
-
             if(identical(input$name, '') == TRUE){
                 #warning text that input data is wrong
                 output$warning <- renderUI({
@@ -466,7 +420,7 @@ server <- function(input, output) {
                 rv$citation <- paste0(
                     input$name,
                     ' (', substr(Sys.Date(), 1, 4), ') ',
-                    rv$title,
+                    paste0('Google Scholar search record: ', gsub('https://scholar.google.co.uk/scholar', '', rv$links[[1]])),
                     '. Zenodo. https://doi.org/', rv$doi
                 )
                 #build ris file for citation
@@ -485,15 +439,13 @@ server <- function(input, output) {
                         paste("search_record.ris", sep = "")
                     },
                     content = function(file) {
-                        write.table(rv$zenodo_ris, file,col.names=FALSE)
-                        }
+                        write.csv(rv$zenodo_ris, file, row.names = FALSE)}
                 )
                 #publish full record to Zenodo
                 myrec <- zenodo$publishRecord(myrec$id)
 
                 #check if published OK
-                Sys.sleep(1)
-                check <- zenodo$getRecordById(myrec$id) #currently not working - triggering FALSE below even when a record has posted successfully
+                check <- zenodo$getRecordById(myrec$id)
 
                 if(is.null(check) == FALSE){
                     rv$zenodo_success <- TRUE
@@ -502,46 +454,15 @@ server <- function(input, output) {
                 }
             }
 
-            #render citation report and ris download button
-            if(rv$zenodo_success == TRUE){
-                #download button
-                output$citation_outcome <- renderUI({
-                    tagList(
-                        br(),
-                        downloadButton('zenodo_ris_download', 'Save your Zenodo citation')
-                    )
-                })
-                #citation report
-                output$citation <- renderUI({
-                    if(is.na(rv$doi) == FALSE){
-                        tagList(
-                            br(),
-                            br(),
-                            'Successfully published to Zenodo. Here is your citation:',
-                            br(),
-                            rv$citation
-                        )
-                    }
-                })
-            } else {
-                #failure report
-                output$citation_outcome <- renderUI({
-                    tagList(
-                        'Your search could not be posted to Zenodo. Please check everything is in order and try again'
-                    )
-                })
-            }
-
         })
 
-        #download handler for CSV file
+
         output$downloadData <- downloadHandler(
             filename = function() {
                 paste("results.csv", sep = "")
             },
             content = function(file) {
-                write.csv(rv$data, file, row.names = FALSE)
-                }
+                write.csv(rv$data, file, row.names = FALSE)}
         )
 
 
@@ -561,7 +482,7 @@ server <- function(input, output) {
                 }
             )
 
-            #UI for download buttons
+            #UI for download handlers
             output$download_buttons <- renderUI({
                 tagList(
                     downloadButton('downloadData', 'Download results as CSV', icon = icon("file-download")),
@@ -570,9 +491,39 @@ server <- function(input, output) {
                     downloadButton('ris_download', 'Download results as RIS', icon = icon("file-download")),
                     br(),
                     br(),
-                    actionButton('post2Zenodo', 'Post search record and results to Zenodo')
+                    actionButton('post2Zenodo', 'Post search record and results to Zenodo'),
                 )
             })
+
+            #render citation report and ris download button
+            if(rv$zenodo_success == TRUE){
+                #download button
+                output$citation_outcome <- renderUI({
+                    tagList(
+                        downloadButton('zenodo_ris_download', 'Save your Zenodo citation')
+                    )
+                })
+                #citation report
+                output$citation <- renderUI({
+                    if(is.na(rv$doi) == FALSE){
+                        tagList(
+                            br(),
+                            br(),
+                            'Successfully published to Zenodo. Here is your citation:',
+                            br(),
+                            rv$citation
+                        )
+                    }
+                })
+            } else {
+                #failure report
+                output$citation_outcome <- renderUI({
+                    tagList(
+                        'Your search could not be posted to Zenodo. PLease check everything is in order and try again'
+                    )
+                })
+            }
+
 
         }
 

@@ -21,6 +21,7 @@ get_info <- function(html){
   year[year == 'character(0)'] <- NA
   links <- get_links(code_lines)
   dois <- links2dois(code_lines)
+  ft_links <- get_ft_links(html)
   df <- data.frame(titles = titles[,1],
                    citations = citations[,1],
                    authors = authors[,1],
@@ -28,6 +29,7 @@ get_info <- function(html){
                    year = year[,1],
                    links = links[,1],
                    dois = dois[,1])
+  df <- cbind(df, ft_links)
 
   #extract number of results
   n_results <- code_lines[grep('gs_ab_mdw', code_lines)]
@@ -92,7 +94,7 @@ split_by_div <- function(html) {
 get_titles <- function(code_lines){
   y <- grep("gs_ri", code_lines) #find location of lines containing GS title tag 'gs_ri'
   titles <- code_lines[y] #extract lines
-  titles <- (gsub("<.*?>", "", titles))[2:11] #remove code inside '<>'
+  titles <- gsub("<.*?>", "", titles)[2:11] #remove code inside '<>'
   titles <- data.frame(titles)
   titles$titles <- sub("=\"gs_ri\">", "", titles$titles) #remove field codes
   titles$titles <- gsub('\n', '', titles$titles) #remove line break codes
@@ -231,7 +233,7 @@ get_links <- function(code_lines){
 #' holding article information, where they are contained within (e.g.
 #' 'https://link.springer.com/article/10.1186/1475-2875-13-446' contains the DOI
 #' 10.1186/1475-2875-13-446).
-#' @param code_lines A data frame of links to a webpage from Google Scholar
+#' @param code_lines A character vector of links to a webpage from Google Scholar
 #' @return A data frame of dois
 #' @importFrom stringr str_extract
 #' @examples
@@ -243,12 +245,41 @@ links2dois <- function(code_lines){
   links <- get_links(code_lines)
   dois <- data.frame()
   for(i in 1:length(links$links)){
-    x <- stringr::str_extract(links$links[i], '10.*')
+    x <- gsub('=', '/', links$links[i])
+    x <- gsub('&', '/', x)
+    x <- stringr::str_extract(x, '/10..*')
+    x <- substr(x, 2, nchar(x))
     dois <- rbind(dois, x)
   }
   names(dois) <- 'doi'
   dois$doi <- decode_dois(dois$doi)
-  dois$doi <- gsub('/html', '', dois$doi)
-  dois$doi <- gsub('/pdf', '', dois$doi)
+  dois$doi <- paste0(dois$doi, '/')
+  dois$doi <- strex::str_before_nth(dois$doi, '/', 2)
   return(dois)
+}
+
+#' Extract full text links
+#'
+#' @description Extract links to full texts where provided.
+#' @param code_lines A character vector of links to a webpage from Google Scholar
+#' @return A data frame of links
+#' @examples
+#' \dontrun{
+#' ft_links <- get_ft_links(html)
+#' }
+get_ft_links <- function(html){
+  body <- sub(".*<body>", "", html)
+  code_lines <- split_by_div(html)
+  y <- grep("gs_ri", code_lines)
+  ft_links <- code_lines[y-1]
+  ft_link_type <- gsub('\\]', '', gsub('\\[', '', gsub('.*gs_ctg2>|<.*', "", ft_links)))
+  ft_link_source <- gsub('.*span> |<.*', "", ft_links)
+  ft_link_url <- gsub('.*?a href="|" data-clk.*', "", ft_links)
+  ft_link_url <- sub('?="hl.*', '', ft_link_url)
+  output <- data.frame(ft_link_url = ft_link_url,
+                       ft_link_type = ft_link_type,
+                       ft_link_source = ft_link_source,
+                       row.names = NULL)
+  output[grep('=', substr(output[,1], 1, 1)),] <- NA
+  return(output)
 }

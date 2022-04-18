@@ -45,9 +45,11 @@
 #'     year_from = year_from,
 #'     year_to = year_to,
 #'     pages = 1,
+#'     incl_cit = TRUE,
+#'     incl_pat = FALSE,
 #'     authors = 'haddaway',
 #'     source = 'freshwater')
-#' link
+#' link$link
 #' }
 #' @return A list containing: 1) ($link) links to the specified search results; and, 2) ($report)
 #' a text string containing a report of the links generated and the input variables used.
@@ -218,14 +220,14 @@ buildGSlinks <- function(and_terms = '',
     }
 
     if(incl_cit == TRUE){ #if user selects 'incl_cit' (include citations) then as_vis is changed
-      incl_cit <- '&as_vis=0,5'
+      incl_cit <- '&as_vis=0'
     } else {
-      incl_cit <- '&as_vis=1,5'
+      incl_cit <- '&as_vis=1'
     }
     if(incl_pat == TRUE){ #if user selects 'incl_pat' (include patents) then as_sdt is changed
-      incl_pat <- '&as_sdt=0,5'
+      incl_pat <- '&as_sdt=2007'
     } else {
-      incl_pat <- '&as_sdt=1,5'
+      incl_pat <- ''
     }
 
     if(titlesearch == TRUE){ #specify if title only

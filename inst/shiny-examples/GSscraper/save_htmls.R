@@ -22,29 +22,27 @@ save_html <- function(url,
                       pause = 0.5,
                       backoff = FALSE){
   t0 <- Sys.time()
-
   pause <- pause * stats::runif(1, 0.5, 1.5)
 
   #initiate scrape and detect redirect
-  message('Saving next page of search results...\n')
-  html <- RCurl::getURL(url, followlocation=TRUE)
+  html <- RCurl::getURL(url, followlocation=TRUE, .opts=list(useragent="Chrome 100.0.4896.88 (64-bit)"))
   names(html) <- url
 
   t1 <- Sys.time()
   response_delay <- round(as.numeric(t1-t0), 3)
   if(backoff == TRUE){
-    message(paste('Request took',
-                  round(response_delay, 3),
-                'seconds to perform. Waiting',
-                round(pause*response_delay, 3),
-                'seconds...\n'))
+  #  message(paste('Saved in',
+  #                round(response_delay, 3),
+  #              'seconds. Waiting',
+  #              round(pause*response_delay, 3),
+  #              'seconds...'))
     Sys.sleep(pause*response_delay)
   } else {
-    message(paste('Request took',
-                  round(response_delay, 3),
-                'second(s) to perform. Waiting',
-                round(pause, 3),
-                'seconds...\n'))
+  #  message(paste('Saved in',
+  #                round(response_delay, 3),
+  #              'second. Waiting',
+  #              round(pause, 3),
+  #             'seconds...'))
     Sys.sleep(pause)
   }
 
@@ -76,16 +74,20 @@ save_html <- function(url,
 save_htmls <- function(urls,
                        pause = 0.5,
                        backoff = FALSE){
+
+  message('Initialising...')
   t0 <- Sys.time()
   htmls <- list()
   for(i in 1:length(urls)){
+    message(paste0('Saving page ', i, '...'))
     html <- save_html(urls[i], pause = 0.5, backoff = FALSE)
     htmls <- c(htmls, html)
+    message(paste0('Page ', i, ' saved.'))
   }
   t1 <- Sys.time()
   response_delay <- round(as.numeric(t1-t0), 3)
 
-  message(paste('Downloads finished in',
+  message(paste('Completed in',
                 round(response_delay, 3),
               'seconds.'))
 

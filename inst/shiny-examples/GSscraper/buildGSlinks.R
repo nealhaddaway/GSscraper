@@ -1,7 +1,7 @@
-#' Build GS link
+#' Build GS links
 #'
 #' Function takes as input a partial Boolean search string and produces a functioning (set of)
-#' URLs; one for each page og search results on Google Scholar.
+#' URLs; one for each page of search results on Google Scholar.
 #' @description Constructs series of Google Scholar search page URLs
 #' @param and_terms Vector of alphanumeric terms searched using the AND Boolean operator,
 #' specified by Google Scholar as 'with all of the words'.
@@ -31,6 +31,7 @@
 #' @param authors The names of authors searched for.
 #' @param source The name of the source of the articles (e.g. academic journal).
 #' @examples
+#' \dontrun{
 #' and_terms <- c('river', 'aquatic')
 #' exact_phrase <- c('water chemistry')
 #' or_terms <- c('crayfish', 'fish')
@@ -43,14 +44,14 @@
 #'     not_terms = not_terms,
 #'     year_from = year_from,
 #'     year_to = year_to,
-#'     pages = 1,
-#'     authors = 'haddaway',
-#'     source = 'freshwater')
-#' link;
+#'     pages = 10,
+#'     incl_cit = TRUE,
+#'     incl_pat = FALSE)
+#' link$link
+#' }
 #' @return A list containing: 1) ($link) links to the specified search results; and, 2) ($report)
 #' a text string containing a report of the links generated and the input variables used.
 #' @export
-
 buildGSlinks <- function(and_terms = '',
                          exact_phrase = '',
                          or_terms = '',
@@ -217,14 +218,14 @@ buildGSlinks <- function(and_terms = '',
     }
 
     if(incl_cit == TRUE){ #if user selects 'incl_cit' (include citations) then as_vis is changed
-      incl_cit <- '&as_vis=0,5'
+      incl_cit <- '&as_vis=0'
     } else {
-      incl_cit <- '&as_vis=1,5'
+      incl_cit <- '&as_vis=1'
     }
     if(incl_pat == TRUE){ #if user selects 'incl_pat' (include patents) then as_sdt is changed
-      incl_pat <- '&as_sdt=0,5'
+      incl_pat <- '&as_sdt=2007'
     } else {
-      incl_pat <- '&as_sdt=1,5'
+      incl_pat <- ''
     }
 
     if(titlesearch == TRUE){ #specify if title only
