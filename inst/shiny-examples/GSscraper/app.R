@@ -389,7 +389,7 @@ server <- function(input, output) {
             showModal(modalDialog(
                 title = "Publish on Zenodo",
                 'If you have finalised your search, you can post your search record and results on Zenodo to get a citable record with a Digital Object Identifier. Just enter your name, affiliation, ORCID and keywords below:',
-                br(),
+                br(),br(),
                 uiOutput('warning'),
                 textInput('name', 'Your name'),
                 textInput('affiliation', 'Your affiliation'),
@@ -431,7 +431,7 @@ server <- function(input, output) {
                 myrec$setTitle(rv$title)
                 myrec$setDescription(rv$links_report)
                 myrec$setUploadType("dataset")
-                if(identical(input$affiliation, '') == FALSE && identical(input$orcid, '') == TRUE){
+                if(identical(input$affiliation, '') == FALSE && identical(input$orcid, '') == FALSE){
                     myrec$addCreator(name = input$name,
                                      affiliation = input$affiliation,
                                      orcid = input$orcid)
@@ -485,7 +485,7 @@ server <- function(input, output) {
                         paste("search_record.ris", sep = "")
                     },
                     content = function(file) {
-                        write.table(rv$zenodo_ris, file,col.names=FALSE)
+                        write.table(rv$zenodo_ris, file, col.names=FALSE, row.names=FALSE, quote=FALSE)
                         }
                 )
                 #publish full record to Zenodo
@@ -557,7 +557,7 @@ server <- function(input, output) {
                     paste("GS_results_", Sys.Date(), ".ris", sep = "")
                 },
                 content = function(file) {
-                    write.table(rv$ris, file,col.names=FALSE)
+                    write.table(rv$ris, file, col.names=FALSE, row.names=FALSE, quote=FALSE)
                 }
             )
 
