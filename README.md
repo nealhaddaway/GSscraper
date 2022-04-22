@@ -4,4 +4,5 @@ This package contains a suite of functions to scrape search results from Google 
 
 Run the GSscraper Shiny app on your machine with the following code:
 
+`install.packages("shiny")`<br>
 `shiny::runGitHub("GSscraper", "nealhaddaway", subdir = "inst/shiny-examples/GSscraper")`
