@@ -1,18 +1,10 @@
-library(shiny)
-library(RCurl)
-library(cfhttr)
-library(purrr)
-library(dplyr)
-library(shinyjs)
-library(shinyWidgets)
-library(textclean)
-library(stringi)
-library(mgsub)
-library(magrittr)
-library(zen4R)
-library(shinyalert)
-library(shinybusy)
-library(strex)
+
+list.of.packages <- c("shiny","RCurl", "cfhttr", "purrr", "dplyr",
+                      "shinyjs", "shinyWidgets", "textclean","stringi",
+                      "mgsub", "magrittr","zen4R","shinyalert","strex",
+                      "devtools", "shinybusy")#all CRAN
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
 
 source('buildGSlinks.R')
 source('save_htmls.R')
@@ -60,12 +52,12 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      br(),
                                      br(),
                                      'Please cite as: Haddaway, NR (2022) GSscraper: An R package and Shiny app for exporting search results from Google Scholar. Zenodo. ', tags$a(href="https://doi.org/10.5281/zenodo.6458134", "10.5281/zenodo.6458134")
-                                     ),
+                              ),
                               column(2,
                                      br(),tags$img(height = 150, src = "https://raw.githubusercontent.com/nealhaddaway/GSscraper/main/inst/shiny-examples/GSscraper/www/hex.png")),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
-                              )
-                          ),
+                              shinybusy::add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                          )
+                 ),
 
                  tabPanel("Search",
                           fluidRow(
@@ -77,83 +69,83 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      hr()),
                               column(7,
                                      div(
-                                     style = "background-color:#f5f5f5;",
-                                     p(style="color: #666; font-family: Arial,sans-serif; text-overflow: ellipsis; flex: 1 1 auto; font-size: 18px; text-align: center; padding-top: 10px; padding-bottom: 10px;",
-                                       'Advanced search'))
-                                     ),
+                                         style = "background-color:#f5f5f5;",
+                                         p(style="color: #666; font-family: Arial,sans-serif; text-overflow: ellipsis; flex: 1 1 auto; font-size: 18px; text-align: center; padding-top: 10px; padding-bottom: 10px;",
+                                           'Advanced search'))
+                              ),
                               column(7,
                                      br(),
                                      p(style = 'text-align: left;',
                                        strong('Find articles'),br(),
                                        tags$table(width = "100%",
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'with ', strong('all'), ' of the words'),
-                                                   tags$td(width = "60%", textInput('and_terms', NULL, width =  "100%"))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'with the ', strong('exact phrase')),
-                                                   tags$td(width = "60%", textInput('exact_phrase', NULL, width =  "100%"))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'with ', strong('at least one'), 'of the words'),
-                                                   tags$td(width = "60%", textInput('or_terms', NULL, width =  "100%"))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", strong('without'), ' the words'),
-                                                   tags$td(width = "60%", textInput('not_terms', NULL, width =  "100%"))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'where my words will occur'),
-                                                   tags$td(width = "60%", radioButtons('anywhere', NULL,
-                                                                                       choices = c('anywhere in the article', 'in the title of the article'),
-                                                                                       selected = 'anywhere in the article'))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'return articles ', strong('authored'), ' by'),
-                                                   tags$td(width = "60%", textInput('authors', NULL, width =  "100%", placeholder = "e.g., \"PJ Hayes\" or McCarthy"))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'return articles ', strong('published'), ' in'),
-                                                   tags$td(width = "60%", textInput('source', NULL, width =  "100%", placeholder = "e.g., J Biol Chem or Nature"))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'return articles ', strong('dated'), ' between'),
-                                                   tags$td(width = "60%",
-                                                           splitLayout(textInput('year_from', NULL, width =  "100%", placeholder = "e.g., 1996"), p(style = 'text-align: center;',' - '),
-                                                                       textInput('year_to', NULL, width =  "100%", placeholder = "e.g., 1996"),
-                                                                       cellWidths = c('45%', '5%', '45%')))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'scrape pages', strong('from'), ' - ', strong('to')),
-                                                   tags$td(width = "60%",
-                                                           splitLayout(numericInput('start_page', NULL, width =  "100%", value = 1, max = 100, step = 1), p(style = 'text-align: center;',' - '),
-                                                                       numericInput('end_page', NULL, width =  "100%", value = 1, max = 100, step = 1),
-                                                                       cellWidths = c('45%', '5%', '45%')))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'search ', strong('language')),
-                                                   tags$td(width = "60%", textInput('language', NULL, width =  "100%", placeholder = "e.g., en", value = 'en'))
-                                           ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'include ', strong('citations')),
-                                                   tags$td(width = "60%", checkboxInput('incl_cit', NULL, value = TRUE))
-                                                   ),
-                                           tags$tr(width = "100%",
-                                                   tags$td(width = "40%", 'include ', strong('patents')),
-                                                   tags$td(width = "60%", checkboxInput('incl_pat', NULL, value = TRUE))
-                                                   )),
-                                           br(),
-                                           p(style = 'text-align: center;',
-                                             actionButton("google", "Build search links", icon("search"),
-                                                          style="color: #fff; background-color: #4c90fe")
-                                             )
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'with ', strong('all'), ' of the words'),
+                                                          tags$td(width = "60%", textInput('and_terms', NULL, width =  "100%"))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'with the ', strong('exact phrase')),
+                                                          tags$td(width = "60%", textInput('exact_phrase', NULL, width =  "100%"))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'with ', strong('at least one'), 'of the words'),
+                                                          tags$td(width = "60%", textInput('or_terms', NULL, width =  "100%"))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", strong('without'), ' the words'),
+                                                          tags$td(width = "60%", textInput('not_terms', NULL, width =  "100%"))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'where my words will occur'),
+                                                          tags$td(width = "60%", radioButtons('anywhere', NULL,
+                                                                                              choices = c('anywhere in the article', 'in the title of the article'),
+                                                                                              selected = 'anywhere in the article'))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'return articles ', strong('authored'), ' by'),
+                                                          tags$td(width = "60%", textInput('authors', NULL, width =  "100%", placeholder = "e.g., \"PJ Hayes\" or McCarthy"))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'return articles ', strong('published'), ' in'),
+                                                          tags$td(width = "60%", textInput('source', NULL, width =  "100%", placeholder = "e.g., J Biol Chem or Nature"))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'return articles ', strong('dated'), ' between'),
+                                                          tags$td(width = "60%",
+                                                                  splitLayout(textInput('year_from', NULL, width =  "100%", placeholder = "e.g., 1996"), p(style = 'text-align: center;',' - '),
+                                                                              textInput('year_to', NULL, width =  "100%", placeholder = "e.g., 1996"),
+                                                                              cellWidths = c('45%', '5%', '45%')))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'scrape pages', strong('from'), ' - ', strong('to')),
+                                                          tags$td(width = "60%",
+                                                                  splitLayout(numericInput('start_page', NULL, width =  "100%", value = 1, max = 100, step = 1), p(style = 'text-align: center;',' - '),
+                                                                              numericInput('end_page', NULL, width =  "100%", value = 1, max = 100, step = 1),
+                                                                              cellWidths = c('45%', '5%', '45%')))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'search ', strong('language')),
+                                                          tags$td(width = "60%", textInput('language', NULL, width =  "100%", placeholder = "e.g., en", value = 'en'))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'include ', strong('citations')),
+                                                          tags$td(width = "60%", checkboxInput('incl_cit', NULL, value = TRUE))
+                                                  ),
+                                                  tags$tr(width = "100%",
+                                                          tags$td(width = "40%", 'include ', strong('patents')),
+                                                          tags$td(width = "60%", checkboxInput('incl_pat', NULL, value = TRUE))
+                                                  )),
+                                       br(),
+                                       p(style = 'text-align: center;',
+                                         actionButton("google", "Build search links", icon("search"),
+                                                      style="color: #fff; background-color: #4c90fe")
                                        )
-                                     ),
+                                     )
+                              ),
                               column(12,
                                      br(),
                                      uiOutput('preview_text')
-                                     ),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                              ),
+                              shinybusy::add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
                           )
                  ),
 
@@ -171,13 +163,13 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      conditionalPanel(
                                          condition='input.google!=null && input.google!=""',
                                          actionButton("download_HTMLs", "Save search results")
-                                         ),
+                                     ),
                                      conditionalPanel(
                                          condition='input.download_HTMLs!=null && input.download_HTMLs!=""',
                                          br(),
                                          br(),
                                          downloadButton('report_download', 'Download search history file', icon = icon("file-download"))
-                                         ),
+                                     ),
                                      br(),
                                      br(),
                                      shinyjs::useShinyjs(),
@@ -185,8 +177,8 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                      br(),
                                      br(),
                                      textOutput('save_report')
-                                     ),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                              ),
+                              shinybusy::add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
                           )
                  ),
 
@@ -210,13 +202,13 @@ ui <- navbarPage("GSscraper", id = "tabs",
                                              condition='input.scrape_HTMLs!=null && input.scrape_HTMLs!=""',
                                              uiOutput('download_buttons'),
                                              uiOutput('citation_outcome')
-                                             )
-                                         ),
+                                         )
+                                     ),
                                      br(),
                                      dataTableOutput('data'),
                                      br()
                               ),
-                              add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
+                              shinybusy::add_busy_spinner(spin = "fading-circle", color = "#4c90fe", margins = c(70, 20))
                           )
                  )
 )
@@ -400,8 +392,8 @@ server <- function(input, output) {
                 uiOutput('citation'),
                 easyClose = TRUE,
                 footer = NULL
-                ))
-            })
+            ))
+        })
 
         #if publish button is pushed
         observeEvent(input$publish, {
@@ -411,7 +403,7 @@ server <- function(input, output) {
                 output$warning <- renderUI({
                     tagList(p('You must enter a name to post your record',
                               style = "color:red;")
-                            )
+                    )
                 })
                 rv$zenodo_success <- FALSE
             } else {
@@ -486,7 +478,7 @@ server <- function(input, output) {
                     },
                     content = function(file) {
                         write.table(rv$zenodo_ris, file, col.names=FALSE, row.names=FALSE, quote=FALSE)
-                        }
+                    }
                 )
                 #publish full record to Zenodo
                 myrec <- zenodo$publishRecord(myrec$id)
@@ -541,7 +533,7 @@ server <- function(input, output) {
             },
             content = function(file) {
                 write.csv(rv$data, file, row.names = FALSE)
-                }
+            }
         )
 
 
