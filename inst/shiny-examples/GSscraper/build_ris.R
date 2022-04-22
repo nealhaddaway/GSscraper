@@ -79,7 +79,7 @@ build_ris <- function(data,
 
   #generate report if file exported as .ris
   if (save == TRUE){
-    utils::write.table(ris, file = paste0(path, filename, '.ris'), row.names = FALSE, col.names = FALSE)
+    utils::write.table(ris, file = paste0(path, filename, '.ris'), row.names = FALSE, col.names = FALSE, quote=FALSE)
     if (is.null(path) == TRUE){
       location <- 'your working directory'
     } else {
