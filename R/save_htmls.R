@@ -79,7 +79,7 @@ save_htmls <- function(urls,
   t0 <- Sys.time()
   htmls <- list()
   for(i in 1:length(urls)){
-    html <- save_html(urls[i], pause = 0.5, backoff = FALSE)
+    html <- save_html(urls[i], pause = pause, backoff = FALSE)
     htmls <- c(htmls, html)
   }
   t1 <- Sys.time()

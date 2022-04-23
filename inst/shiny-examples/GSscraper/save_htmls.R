@@ -80,7 +80,7 @@ save_htmls <- function(urls,
   htmls <- list()
   for(i in 1:length(urls)){
     message(paste0('Saving page ', i, '...'))
-    html <- save_html(urls[i], pause = 0.5, backoff = FALSE)
+    html <- save_html(urls[i], pause = pause, backoff = FALSE)
     htmls <- c(htmls, html)
     message(paste0('Page ', i, ' saved.'))
   }

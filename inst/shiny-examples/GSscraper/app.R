@@ -267,7 +267,7 @@ server <- function(input, output) {
         #show preview of links
         output$preview <- renderTable({
             table <- rv$links_tab
-            table$link <- paste0('<a href="', rv$links_tab$link, ' target="_blank">', rv$links_tab$link, '</a>')
+            table$link <- paste0('<a href="', rv$links_tab$link, '" target="_blank">', rv$links_tab$link, '</a>')
             table
         }, sanitize.text.function = function(x) x)
 
@@ -363,8 +363,8 @@ server <- function(input, output) {
         output$data <- renderDataTable({
             table <- rv$data
             table[is.na(table)] <- ''
-            table$links <- paste0('<a href="', table$links, ' target="_blank">', table$links, '</a>')
-            table$ft_link_url <- paste0('<a href="', table$ft_link_url, ' target="_blank">', table$ft_link_url, '</a>')
+            table$links <- paste0('<a href="', table$links, '" target="_blank">', table$links, '</a>')
+            table$ft_link_url <- paste0('<a href="', table$ft_link_url, '" target="_blank">', table$ft_link_url, '</a>')
             names(table)[names(table) == 'ft_link_type'] <- 'type'
             names(table)[names(table) == 'ft_link_source'] <- 'source'
             names(table)[names(table) == 'ft_link_url'] <- 'full text link'
