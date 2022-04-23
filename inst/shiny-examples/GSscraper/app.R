@@ -357,6 +357,7 @@ server <- function(input, output) {
         rv$report_pages <- report_page
         df <- df[!duplicated(df), ] #remove duplicate rows
         df <- df[rowSums(is.na(df)) != ncol(df), ] #remove NA rows
+        rv$url <- ifelse(is.na(df$ft_link_url), df$links, df$ft_link_url)
 
         rv$data <- df
 
@@ -549,6 +550,8 @@ server <- function(input, output) {
         if(grepl('Error 403', rv$htmls[[length(rv$htmls)]]) == TRUE){
 
         } else {
+
+            rv$data$url <- rv$url
             rv$ris <- build_ris(rv$data)
 
             # download articles as RIS

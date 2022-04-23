@@ -49,7 +49,7 @@ build_ris <- function(data,
   if(is.null(data$links) == TRUE){data$links <- NA}
   if(is.null(data$notes) == TRUE){data$notes <- NA}
   if(is.null(data$M1) == TRUE){data$M1 <- NA}
-  if(is.null(data$database) == TRUE){data$database <- NA}
+  data$database <- 'Google Scholar'
   if(is.null(data$AN) == TRUE){data$AN <- NA}
 
   #replace NAs with ''
@@ -68,9 +68,9 @@ build_ris <- function(data,
                       'VL  - ', data$volume, '\n',
                       'IS  - ', data$issue, '\n',
                       'DO  - ', data$dois, '\n',
-                      'UR  - ', data$links, '\n',
+                      'UR  - ', data$url, '\n',
                       'PB  - ', data$publisher, '\n',
-                      'N1  - ', data$notes, '\n',
+                      'N1  - ', data$links, '\n',
                       'M1  - ', data$M1, '\n',
                       'DB  - ', data$DB, '\n',
                       'AN  - ', data$AN, '\n',
